@@ -1,0 +1,837 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>IconFont</title>
+    <link rel="stylesheet" href="demo.css">
+    <link rel="stylesheet" href="iconfont.css">
+</head>
+<body>
+    <div class="main">
+        <h1>IconFont 图标</h1>
+        <ul class="icon_lists clear">
+            
+                <li>
+                <i class="icon iconfont">&#xe600;</i>
+                    <div class="name">favor_fill</div>
+                    <div class="code">&amp;#xe600;</div>
+                    <div class="fontclass">.favorfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe602;</i>
+                    <div class="name">loading</div>
+                    <div class="code">&amp;#xe602;</div>
+                    <div class="fontclass">.loading</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe603;</i>
+                    <div class="name">phone</div>
+                    <div class="code">&amp;#xe603;</div>
+                    <div class="fontclass">.phone</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe604;</i>
+                    <div class="name">round_right_fill</div>
+                    <div class="code">&amp;#xe604;</div>
+                    <div class="fontclass">.roundrightfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe606;</i>
+                    <div class="name">search</div>
+                    <div class="code">&amp;#xe606;</div>
+                    <div class="fontclass">.search</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe60a;</i>
+                    <div class="name">warn_fill</div>
+                    <div class="code">&amp;#xe60a;</div>
+                    <div class="fontclass">.warnfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe60b;</i>
+                    <div class="name">warn</div>
+                    <div class="code">&amp;#xe60b;</div>
+                    <div class="fontclass">.warn</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe60d;</i>
+                    <div class="name">camera_fill</div>
+                    <div class="code">&amp;#xe60d;</div>
+                    <div class="fontclass">.camerafill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe60e;</i>
+                    <div class="name">camera</div>
+                    <div class="code">&amp;#xe60e;</div>
+                    <div class="fontclass">.camera</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe60f;</i>
+                    <div class="name">my_fill</div>
+                    <div class="code">&amp;#xe60f;</div>
+                    <div class="fontclass">.myfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe610;</i>
+                    <div class="name">my</div>
+                    <div class="code">&amp;#xe610;</div>
+                    <div class="fontclass">.my</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe611;</i>
+                    <div class="name">scan</div>
+                    <div class="code">&amp;#xe611;</div>
+                    <div class="fontclass">.scan</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe612;</i>
+                    <div class="name">settings</div>
+                    <div class="code">&amp;#xe612;</div>
+                    <div class="fontclass">.settings</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe613;</i>
+                    <div class="name">filter</div>
+                    <div class="code">&amp;#xe613;</div>
+                    <div class="fontclass">.filter</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe652;</i>
+                    <div class="name">top</div>
+                    <div class="code">&amp;#xe652;</div>
+                    <div class="fontclass">.top</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe654;</i>
+                    <div class="name">pull_up</div>
+                    <div class="code">&amp;#xe654;</div>
+                    <div class="fontclass">.pullup</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe655;</i>
+                    <div class="name">refresh</div>
+                    <div class="code">&amp;#xe655;</div>
+                    <div class="fontclass">.refresh</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe656;</i>
+                    <div class="name">more_android</div>
+                    <div class="code">&amp;#xe656;</div>
+                    <div class="fontclass">.moreandroid</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe657;</i>
+                    <div class="name">qr_code</div>
+                    <div class="code">&amp;#xe657;</div>
+                    <div class="fontclass">.qrcode</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe658;</i>
+                    <div class="name">remind</div>
+                    <div class="code">&amp;#xe658;</div>
+                    <div class="fontclass">.remind</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe659;</i>
+                    <div class="name">home</div>
+                    <div class="code">&amp;#xe659;</div>
+                    <div class="fontclass">.home</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe65a;</i>
+                    <div class="name">home_fill</div>
+                    <div class="code">&amp;#xe65a;</div>
+                    <div class="fontclass">.homefill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe65b;</i>
+                    <div class="name">address_book</div>
+                    <div class="code">&amp;#xe65b;</div>
+                    <div class="fontclass">.addressbook</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe65c;</i>
+                    <div class="name">link</div>
+                    <div class="code">&amp;#xe65c;</div>
+                    <div class="fontclass">.link</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe65d;</i>
+                    <div class="name">lock</div>
+                    <div class="code">&amp;#xe65d;</div>
+                    <div class="fontclass">.lock</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe65e;</i>
+                    <div class="name">unlock</div>
+                    <div class="code">&amp;#xe65e;</div>
+                    <div class="fontclass">.unlock</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe65f;</i>
+                    <div class="name">friend_add_fill</div>
+                    <div class="code">&amp;#xe65f;</div>
+                    <div class="fontclass">.friendaddfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe660;</i>
+                    <div class="name">friend_add</div>
+                    <div class="code">&amp;#xe660;</div>
+                    <div class="fontclass">.friendadd</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe661;</i>
+                    <div class="name">friend_famous</div>
+                    <div class="code">&amp;#xe661;</div>
+                    <div class="fontclass">.friendfamous</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe662;</i>
+                    <div class="name">friend</div>
+                    <div class="code">&amp;#xe662;</div>
+                    <div class="fontclass">.friend</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe664;</i>
+                    <div class="name">friend_favor</div>
+                    <div class="code">&amp;#xe664;</div>
+                    <div class="fontclass">.friendfavor</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe665;</i>
+                    <div class="name">sort</div>
+                    <div class="code">&amp;#xe665;</div>
+                    <div class="fontclass">.sort</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe666;</i>
+                    <div class="name">down</div>
+                    <div class="code">&amp;#xe666;</div>
+                    <div class="fontclass">.down</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe66b;</i>
+                    <div class="name">female</div>
+                    <div class="code">&amp;#xe66b;</div>
+                    <div class="fontclass">.female</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe66c;</i>
+                    <div class="name">keyboard</div>
+                    <div class="code">&amp;#xe66c;</div>
+                    <div class="fontclass">.keyboard</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe66d;</i>
+                    <div class="name">male</div>
+                    <div class="code">&amp;#xe66d;</div>
+                    <div class="fontclass">.male</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe66e;</i>
+                    <div class="name">new_fill</div>
+                    <div class="code">&amp;#xe66e;</div>
+                    <div class="fontclass">.newfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe66f;</i>
+                    <div class="name">new</div>
+                    <div class="code">&amp;#xe66f;</div>
+                    <div class="fontclass">.new</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe670;</i>
+                    <div class="name">pull_left</div>
+                    <div class="code">&amp;#xe670;</div>
+                    <div class="fontclass">.pullleft</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe671;</i>
+                    <div class="name">pull_right</div>
+                    <div class="code">&amp;#xe671;</div>
+                    <div class="fontclass">.pullright</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe674;</i>
+                    <div class="name">camera_add</div>
+                    <div class="code">&amp;#xe674;</div>
+                    <div class="fontclass">.cameraadd</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe675;</i>
+                    <div class="name">friend_fill</div>
+                    <div class="code">&amp;#xe675;</div>
+                    <div class="fontclass">.friendfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe676;</i>
+                    <div class="name">pic_fill</div>
+                    <div class="code">&amp;#xe676;</div>
+                    <div class="fontclass">.picfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe60c;</i>
+                    <div class="name">align-justify</div>
+                    <div class="code">&amp;#xe60c;</div>
+                    <div class="fontclass">.alignjustify</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe677;</i>
+                    <div class="name">mark_fill</div>
+                    <div class="code">&amp;#xe677;</div>
+                    <div class="fontclass">.markfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe678;</i>
+                    <div class="name">mark</div>
+                    <div class="code">&amp;#xe678;</div>
+                    <div class="fontclass">.mark</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe679;</i>
+                    <div class="name">album</div>
+                    <div class="code">&amp;#xe679;</div>
+                    <div class="fontclass">.album</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe67a;</i>
+                    <div class="name">people_fill</div>
+                    <div class="code">&amp;#xe67a;</div>
+                    <div class="fontclass">.peoplefill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe67b;</i>
+                    <div class="name">people</div>
+                    <div class="code">&amp;#xe67b;</div>
+                    <div class="fontclass">.people</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe67f;</i>
+                    <div class="name">attention_fill</div>
+                    <div class="code">&amp;#xe67f;</div>
+                    <div class="fontclass">.attentionfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe680;</i>
+                    <div class="name">attention</div>
+                    <div class="code">&amp;#xe680;</div>
+                    <div class="fontclass">.attention</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe688;</i>
+                    <div class="name">round_down</div>
+                    <div class="code">&amp;#xe688;</div>
+                    <div class="fontclass">.rounddown</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe689;</i>
+                    <div class="name">upload</div>
+                    <div class="code">&amp;#xe689;</div>
+                    <div class="fontclass">.upload</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe68c;</i>
+                    <div class="name">safe</div>
+                    <div class="code">&amp;#xe68c;</div>
+                    <div class="fontclass">.safe</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe614;</i>
+                    <div class="name">设置</div>
+                    <div class="code">&amp;#xe614;</div>
+                    <div class="fontclass">.shezhi</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe615;</i>
+                    <div class="name">单选-fill</div>
+                    <div class="code">&amp;#xe615;</div>
+                    <div class="fontclass">.danxuanfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe616;</i>
+                    <div class="name">单选</div>
+                    <div class="code">&amp;#xe616;</div>
+                    <div class="fontclass">.danxuan</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe617;</i>
+                    <div class="name">方形未选中</div>
+                    <div class="code">&amp;#xe617;</div>
+                    <div class="fontclass">.fangxingweixuanzhong</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe618;</i>
+                    <div class="name">方形选中-fill</div>
+                    <div class="code">&amp;#xe618;</div>
+                    <div class="fontclass">.fangxingxuanzhongfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe619;</i>
+                    <div class="name">方形选中</div>
+                    <div class="code">&amp;#xe619;</div>
+                    <div class="fontclass">.fangxingxuanzhong</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe61a;</i>
+                    <div class="name">关闭1</div>
+                    <div class="code">&amp;#xe61a;</div>
+                    <div class="fontclass">.guanbi1</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe61b;</i>
+                    <div class="name">关闭2-fill</div>
+                    <div class="code">&amp;#xe61b;</div>
+                    <div class="fontclass">.guanbi2fill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe61c;</i>
+                    <div class="name">关闭2</div>
+                    <div class="code">&amp;#xe61c;</div>
+                    <div class="fontclass">.guanbi2</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe61d;</i>
+                    <div class="name">加号</div>
+                    <div class="code">&amp;#xe61d;</div>
+                    <div class="fontclass">.jiahao</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe61e;</i>
+                    <div class="name">加号1</div>
+                    <div class="code">&amp;#xe61e;</div>
+                    <div class="fontclass">.jiahao1</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe61f;</i>
+                    <div class="name">加号2-fill</div>
+                    <div class="code">&amp;#xe61f;</div>
+                    <div class="fontclass">.jiahao2fill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe620;</i>
+                    <div class="name">减号</div>
+                    <div class="code">&amp;#xe620;</div>
+                    <div class="fontclass">.jianhao</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe621;</i>
+                    <div class="name">提示-fill</div>
+                    <div class="code">&amp;#xe621;</div>
+                    <div class="fontclass">.tishifill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe622;</i>
+                    <div class="name">提示</div>
+                    <div class="code">&amp;#xe622;</div>
+                    <div class="fontclass">.tishi</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe623;</i>
+                    <div class="name">问号-fill</div>
+                    <div class="code">&amp;#xe623;</div>
+                    <div class="fontclass">.wenhaofill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe624;</i>
+                    <div class="name">问号</div>
+                    <div class="code">&amp;#xe624;</div>
+                    <div class="fontclass">.wenhao</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe625;</i>
+                    <div class="name">选择</div>
+                    <div class="code">&amp;#xe625;</div>
+                    <div class="fontclass">.xuanze</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe626;</i>
+                    <div class="name">圆形未选中</div>
+                    <div class="code">&amp;#xe626;</div>
+                    <div class="fontclass">.yuanxingweixuanzhong</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe627;</i>
+                    <div class="name">圆形选中-fill</div>
+                    <div class="code">&amp;#xe627;</div>
+                    <div class="fontclass">.yuanxingxuanzhongfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe628;</i>
+                    <div class="name">圆形选中</div>
+                    <div class="code">&amp;#xe628;</div>
+                    <div class="fontclass">.yuanxingxuanzhong</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe629;</i>
+                    <div class="name">标星-fill</div>
+                    <div class="code">&amp;#xe629;</div>
+                    <div class="fontclass">.biaoxingfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe62a;</i>
+                    <div class="name">标星</div>
+                    <div class="code">&amp;#xe62a;</div>
+                    <div class="fontclass">.biaoxing</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe62b;</i>
+                    <div class="name">撤销</div>
+                    <div class="code">&amp;#xe62b;</div>
+                    <div class="fontclass">.chexiao</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe62d;</i>
+                    <div class="name">反馈</div>
+                    <div class="code">&amp;#xe62d;</div>
+                    <div class="fontclass">.fankui</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe62e;</i>
+                    <div class="name">分享</div>
+                    <div class="code">&amp;#xe62e;</div>
+                    <div class="fontclass">.fenxiang</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe62f;</i>
+                    <div class="name">更多</div>
+                    <div class="code">&amp;#xe62f;</div>
+                    <div class="fontclass">.gengduo</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe630;</i>
+                    <div class="name">购物车-fill</div>
+                    <div class="code">&amp;#xe630;</div>
+                    <div class="fontclass">.gouwuchefill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe631;</i>
+                    <div class="name">购物车</div>
+                    <div class="code">&amp;#xe631;</div>
+                    <div class="fontclass">.gouwuche</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe632;</i>
+                    <div class="name">留言-fill</div>
+                    <div class="code">&amp;#xe632;</div>
+                    <div class="fontclass">.liuyanfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe633;</i>
+                    <div class="name">留言</div>
+                    <div class="code">&amp;#xe633;</div>
+                    <div class="fontclass">.liuyan</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe635;</i>
+                    <div class="name">朋友</div>
+                    <div class="code">&amp;#xe635;</div>
+                    <div class="fontclass">.pengyou</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe637;</i>
+                    <div class="name">扫码</div>
+                    <div class="code">&amp;#xe637;</div>
+                    <div class="fontclass">.saoma</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe638;</i>
+                    <div class="name">筛选</div>
+                    <div class="code">&amp;#xe638;</div>
+                    <div class="fontclass">.shaixuan</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe639;</i>
+                    <div class="name">删除</div>
+                    <div class="code">&amp;#xe639;</div>
+                    <div class="fontclass">.shanchu</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe63a;</i>
+                    <div class="name">身份</div>
+                    <div class="code">&amp;#xe63a;</div>
+                    <div class="fontclass">.shenfen</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe63b;</i>
+                    <div class="name">时钟-fill</div>
+                    <div class="code">&amp;#xe63b;</div>
+                    <div class="fontclass">.shizhongfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe63c;</i>
+                    <div class="name">时钟</div>
+                    <div class="code">&amp;#xe63c;</div>
+                    <div class="fontclass">.shizhong</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe63e;</i>
+                    <div class="name">通知-fill</div>
+                    <div class="code">&amp;#xe63e;</div>
+                    <div class="fontclass">.tongzhifill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe63f;</i>
+                    <div class="name">通知</div>
+                    <div class="code">&amp;#xe63f;</div>
+                    <div class="fontclass">.tongzhi</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe640;</i>
+                    <div class="name">喜欢-fill</div>
+                    <div class="code">&amp;#xe640;</div>
+                    <div class="fontclass">.xihuanfill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe641;</i>
+                    <div class="name">喜欢</div>
+                    <div class="code">&amp;#xe641;</div>
+                    <div class="fontclass">.xihuan</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe642;</i>
+                    <div class="name">信息-fill</div>
+                    <div class="code">&amp;#xe642;</div>
+                    <div class="fontclass">.xinxifill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe643;</i>
+                    <div class="name">信息</div>
+                    <div class="code">&amp;#xe643;</div>
+                    <div class="fontclass">.xinxi</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe644;</i>
+                    <div class="name">顶部</div>
+                    <div class="code">&amp;#xe644;</div>
+                    <div class="fontclass">.dingbu</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe645;</i>
+                    <div class="name">向上1</div>
+                    <div class="code">&amp;#xe645;</div>
+                    <div class="fontclass">.xiangshang1</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe646;</i>
+                    <div class="name">向上2</div>
+                    <div class="code">&amp;#xe646;</div>
+                    <div class="fontclass">.xiangshang2</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe647;</i>
+                    <div class="name">向上3</div>
+                    <div class="code">&amp;#xe647;</div>
+                    <div class="fontclass">.xiangshang3</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe648;</i>
+                    <div class="name">向下1</div>
+                    <div class="code">&amp;#xe648;</div>
+                    <div class="fontclass">.xiangxia1</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe649;</i>
+                    <div class="name">向下2</div>
+                    <div class="code">&amp;#xe649;</div>
+                    <div class="fontclass">.xiangxia2</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe64a;</i>
+                    <div class="name">向下3</div>
+                    <div class="code">&amp;#xe64a;</div>
+                    <div class="fontclass">.xiangxia3</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe64b;</i>
+                    <div class="name">向下5</div>
+                    <div class="code">&amp;#xe64b;</div>
+                    <div class="fontclass">.xiangxia5</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe64c;</i>
+                    <div class="name">向右1</div>
+                    <div class="code">&amp;#xe64c;</div>
+                    <div class="fontclass">.xiangyou1</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe64d;</i>
+                    <div class="name">向右2</div>
+                    <div class="code">&amp;#xe64d;</div>
+                    <div class="fontclass">.xiangyou2</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe64e;</i>
+                    <div class="name">向右3-fill</div>
+                    <div class="code">&amp;#xe64e;</div>
+                    <div class="fontclass">.xiangyou3fill</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe64f;</i>
+                    <div class="name">向右3</div>
+                    <div class="code">&amp;#xe64f;</div>
+                    <div class="fontclass">.xiangyou3</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe650;</i>
+                    <div class="name">向左1</div>
+                    <div class="code">&amp;#xe650;</div>
+                    <div class="fontclass">.xiangzuo1</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe651;</i>
+                    <div class="name">向左2</div>
+                    <div class="code">&amp;#xe651;</div>
+                    <div class="fontclass">.xiangzuo2</div>
+                </li>
+            
+                <li>
+                <i class="icon iconfont">&#xe601;</i>
+                    <div class="name">star-half</div>
+                    <div class="code">&amp;#xe601;</div>
+                    <div class="fontclass">.biaoxing1</div>
+                </li>
+            
+        </ul>
+
+
+        <div class="helps">
+            第一步：使用font-face声明字体
+            <pre>
+@font-face {font-family: 'iconfont';
+    src: url('iconfont.eot'); /* IE9*/
+    src: url('iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('iconfont.woff') format('woff'), /* chrome、firefox */
+    url('iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+    url('iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
+}
+</pre>
+第二步：定义使用iconfont的样式
+            <pre>
+.iconfont{
+    font-family:"iconfont" !important;
+    font-size:16px;font-style:normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;}
+</pre>
+第三步：挑选相应图标并获取字体编码，应用于页面
+<pre>
+&lt;i class="iconfont"&gt;&amp;#x33;&lt;/i&gt;
+</pre>
+        </div>
+
+    </div>
+</body>
+</html>
