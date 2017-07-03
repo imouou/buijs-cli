@@ -4,10 +4,12 @@ var fs = require('fs');
 var path = require('path');
 
 var config = {},
-    platform = "",
+    platform = "Webapp",
     PATH = ".";
 
+// ["-b","-d"]
 process.argv.slice(2).forEach( function (item) {
+
   switch (item) {
     case "-b":
     // 原生方法更换为bingotouch开发平台
@@ -117,18 +119,20 @@ mkdir(PATH + '/public', function () {
 
     if ( config.bingotouch ){
     // 复制bingotouch的js
-        copyTemplate("platform/bingotouch/js/cordova.js", PATH + '/js/cordova.js');
-        copyTemplate("platform/bingotouch/js/bingotouch.js", PATH + '/js/bingotouch.js');
-        copyTemplate("platform/bingotouch/js/bui.js", PATH + '/js/bui.js');
+        copyTemplate("platform/bingotouch/js/cordova.js", PATH + '/public/js/cordova.js');
+        copyTemplate("platform/bingotouch/js/bingotouch.js", PATH + '/public/js/bingotouch.js');
+        copyTemplate("platform/bingotouch/js/bui.js", PATH + '/public/js/bui.js');
     }else if ( config.link ){
     // 复制link的js
-        copyTemplate("platform/link/js/cordova.js", PATH + '/js/cordova.js');
-        copyTemplate("platform/link/js/bingotouch.js", PATH + '/js/bingotouch.js');
-        copyTemplate("platform/link/js/linkplugins.js", PATH + '/js/linkplugins.js');
-        copyTemplate("platform/link/js/bui.js", PATH + '/js/bui.js');
+        copyTemplate("platform/link/js/cordova.js", PATH + '/public/js/cordova.js');
+        copyTemplate("platform/link/js/bingotouch.js", PATH + '/public/js/bingotouch.js');
+        copyTemplate("platform/link/js/linkplugins.js", PATH + '/public/js/linkplugins.js');
+        copyTemplate("platform/link/js/bui.js", PATH + '/public/js/bui.js');
     }else if( config.apicloud ){
         copyTemplate("platform/apicloud/js/bui.js",PATH + '/public/js/bui.js');
         copyTemplate("platform/apicloud/js/api.js",PATH + '/public/js/api.js');
+    }else if( config.dcloud ){
+        copyTemplate("platform/dcloud/js/bui.js",PATH + '/public/js/bui.js');
     }
 
 

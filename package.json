@@ -1,6 +1,6 @@
 {
   "name": "buijs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "BUI 移动应用开发UI库",
   "main": "index.js",
   "bin": {
