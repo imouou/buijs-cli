@@ -1,26 +1,5 @@
 {
-  "name": "buijs",
-  "version": "0.0.1",
-  "description": "BUI 移动应用开发UI库",
-  "main": "index.js",
-  "bin": {
-    "buijs":"./index.js"
-  },
-  "keywords": [
-    "bui",
-    "buijs"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/imouou/buijs-cli.git"
-  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "imouou@gmail.com",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/imouou/buijs-cli/issues"
-  },
-  "homepage": "https://github.com/imouou/buijs-cli#readme"
+    "sass": "sass --watch src/scss/style.scss:public/css/style.css"
+  }
 }

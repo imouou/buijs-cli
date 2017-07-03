@@ -15,12 +15,12 @@
     "url": "git+https://github.com/imouou/buijs-cli.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo Error: no test specified && exit 1"
   },
   "author": "imouou@gmail.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/imouou/buijs-cli/issues"
-  },
-  "homepage": "https://github.com/imouou/buijs-cli#readme"
+    "url": "https://github.com/imouou/buijs-cli/issues"
+  },
+  "homepage": "https://github.com/imouou/buijs-cli#readme"
 }
