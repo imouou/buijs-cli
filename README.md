@@ -1,7 +1,7 @@
-# buijs-cli
+# buijs 命令行工具
 
 ## 简介
-BUI的不同平台开发包的命令行生成工具. 这是一个半自动工程化的目录, 只负责生成对应平台的必须的目录文件,并引用好依赖, 其它,例如 sass的编译, 推荐使用 考拉或者prepros 的sass可视化工具编译, 当然你也可以自行安装 gulp 或者 webpack 的sass依赖进行编译.
+buijs 是一个半自动工程化的命令工具, 只负责生成对应平台的必须的目录文件,并引用好依赖, 其它,例如 sass的编译, 推荐使用 考拉或者prepros 的sass可视化工具编译, 当然你也可以自行安装 gulp 或者 webpack 的sass依赖进行编译.
 
 ## 安装buijs命令行工具
 
@@ -15,7 +15,9 @@ mac:
 sudo npm install -g buijs
 ```
 
-## 更新buijs新版本
+## 更新
+
+### 1. 更新buijs包
 
 windows: 
 ```
@@ -25,6 +27,18 @@ npm update -g buijs
 mac: 
 ```
 sudo npm update -g buijs
+```
+
+### 2. 更新工程里bui库的js及css
+
+** 更新 webapp 版 示例:**
+```
+buijs -u 
+```
+
+** 更新 Bingotouch 版 示例:**
+```
+buijs -u -b
 ```
 
 ## 初始化工程目录:
