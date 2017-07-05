@@ -18,26 +18,31 @@ process.argv.slice(2).forEach( function (item) {
     case "-b":
     // 原生方法更换为bingotouch开发平台
       config.bingotouch = true;
+      removeArray("Webapp",platform);
       platform.push("Bingotouch");
       break;
     case "-l":
     // 原生方法更换为bingotouch开发平台
       config.link = true;
+      removeArray("Webapp",platform);
       platform.push("Link");
       break;
     case "-a":
     // 原生方法更换为apicloud开发平台
       config.apicloud = true;
+      removeArray("Webapp",platform);
       platform.push("Apicloud");
       break;
     case "-d":
     // 原生方法更换为dcloud开发平台
       config.dcloud = true;
+      removeArray("Webapp",platform);
       platform.push("Dcloud");
       break;
     case "-w":
     // 原生方法更换为微信开发平台
       config.weixin = true;
+      removeArray("Webapp",platform);
       platform.push("Weixin");
       break;
     case "-u":
@@ -225,6 +230,8 @@ if( config.update ){
         copyTemplate("platform/dcloud/manifest.json",PATH + '/public/manifest.json');
         // dcloud 首页引用
         copyTemplate("platform/dcloud/index.html",PATH + '/public/index.html');
+
+        mkdir(PATH + '/public/unpackage');
     }
 
 
@@ -243,6 +250,7 @@ if( config.update ){
   });
 
   console.info(platform.join("&")+" build complete.");
+  //console.log(" use \"npm run sass\" to watch the sass file changes.");
 }
 
 // 更新样式
@@ -263,9 +271,23 @@ function buildJs() {
 
       // 复制web必备的js
       config.webapp && copyTemplate("platform/web/js/bui.js",PATH + '/public/js/bui.js');
+      
+      // 更新 bingotouch
       config.bingotouch && copyTemplate("platform/bingotouch/js/bui.js", PATH + '/public/js/bui.js');
+      config.bingotouch && copyTemplate("platform/bingotouch/js/cordova.js", PATH + '/public/js/cordova.js');
+      config.bingotouch && copyTemplate("platform/bingotouch/js/bingotouch.js", PATH + '/public/js/bingotouch.js');
+      
+      // 更新 link
       config.link && copyTemplate("platform/link/js/bui.js", PATH + '/public/js/bui.js');
+      config.link && copyTemplate("platform/link/js/cordova.js", PATH + '/public/js/cordova.js');
+      config.link && copyTemplate("platform/link/js/linkplugins.js", PATH + '/public/js/linkplugins.js');
+      config.link && copyTemplate("platform/link/js/bingotouch.js", PATH + '/public/js/bingotouch.js');
+
+      // 更新 apicloud 
       config.apicloud && copyTemplate("platform/apicloud/js/bui.js", PATH + '/public/js/bui.js');
+      config.apicloud && copyTemplate("platform/apicloud/js/api.js", PATH + '/public/js/api.js');
+
+      // 更新 dcloud 
       config.dcloud && copyTemplate("platform/dcloud/js/bui.js", PATH + '/public/js/bui.js');
 
     })
@@ -293,6 +315,28 @@ function mkdir (path, fn) {
   })
 }
 
+// 删除数组
+function removeArray(name,arr,key) {  
+    var data = arr || [];
+
+    if( typeof(key) === "string"){
+        for(var i in data){  
+            try{  
+                var arrs = data[i][key];
+
+                if( arrs === name) {
+                    data = data.splice(i,1); 
+                } 
+            }catch(e){}
+        };
+    }else{
+        var index = arr.indexOf(name);
+
+        return data = index > -1 ? data.splice(index,1) : arr;
+    }
+    
+    return arr;
+}; 
 // 检测文件是否存在
 function exists(filename,onSuccess,onFail) {
     fs.exists(__dirname + '/'+filename, function (isExist) {
