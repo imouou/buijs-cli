@@ -74,7 +74,7 @@ if( config.update ){
   mkdir(PATH + '/public', function () {
 
       // 复制web的首页
-    copyTemplate("platform/web/index.html", PATH + '/public/index.html');
+    copyTemplate("platform/web/template.html", PATH + '/public/template.html');
 
     // 复制样式
     buildCss();
@@ -134,7 +134,7 @@ if( config.update ){
     // 复制bingotouch的打包文件目录
     if( config.bingotouch ){
          // 替换首页
-         copyTemplate("platform/bingotouch/index.html", PATH + '/public/index.html');
+         copyTemplate("platform/bingotouch/template.html", PATH + '/public/template.html');
 
       // 复制res打包文件夹
         mkdir(PATH + '/public/res',function () {
@@ -200,11 +200,11 @@ if( config.update ){
     }
     if ( config.link ){
     // 复制link的首页  
-      copyTemplate("platform/link/index.html", PATH + '/public/index.html');
+      copyTemplate("platform/link/template.html", PATH + '/public/template.html');
     }
     if ( config.weixin ){
     // 复制微信的首页 
-      copyTemplate("platform/weixin/index.html", PATH + '/public/index.html');
+      copyTemplate("platform/weixin/template.html", PATH + '/public/template.html');
     }
     if( config.apicloud ){
     // 复制apicloud的打包文件目录
@@ -212,7 +212,7 @@ if( config.update ){
         // apicloud 配置文件
         copyTemplate("platform/apicloud/config.xml",PATH + '/public/config.xml');
         // apicloud 首页引用
-        copyTemplate("platform/apicloud/index.html",PATH + '/public/index.html');
+        copyTemplate("platform/apicloud/template.html",PATH + '/public/template.html');
         // 图标
         mkdir(PATH + '/public/icon',function () {
               copyFile("platform/apicloud/icon/icon150x150.png",PATH + '/public/icon/icon150x150.png');
@@ -229,7 +229,7 @@ if( config.update ){
         // dcloud 配置文件
         copyTemplate("platform/dcloud/manifest.json",PATH + '/public/manifest.json');
         // dcloud 首页引用
-        copyTemplate("platform/dcloud/index.html",PATH + '/public/index.html');
+        copyTemplate("platform/dcloud/template.html",PATH + '/public/template.html');
 
         mkdir(PATH + '/public/unpackage');
     }
