@@ -116,10 +116,10 @@ if( config.update ){
 
       if ( config.link ){
       // 复制link的js
-          copyTemplate("platform/link/js/cordova.js", PATH + '/public/js/cordova.js');
-          copyTemplate("platform/link/js/bingotouch.js", PATH + '/public/js/bingotouch.js');
+          copyTemplate("platform/bingotouch/js/cordova.js", PATH + '/public/js/cordova.js');
+          copyTemplate("platform/bingotouch/js/bingotouch.js", PATH + '/public/js/bingotouch.js');
+          copyTemplate("platform/bingotouch/js/bui.js", PATH + '/public/js/bui.js');
           copyTemplate("platform/link/js/linkplugins.js", PATH + '/public/js/linkplugins.js');
-          copyTemplate("platform/link/js/bui.js", PATH + '/public/js/bui.js');
       }
       if( config.apicloud ){
           copyTemplate("platform/apicloud/js/bui.js",PATH + '/public/js/bui.js');
@@ -258,9 +258,10 @@ function buildCss() {
   // 复制样式
     mkdir(PATH + '/public/css',function () {
       copyTemplate("css/bui.css",PATH + '/public/css/bui.css');
-      copyTemplate("css/bui.css.map",PATH + '/public/css/bui.css.map');
       // 微信模板
       config.weixin && copyTemplate("platform/weixin/css/bui_weixin.css",PATH + '/public/css/bui_weixin.css');
+      // API样式更新
+      config.apicloud && copyTemplate("platform/apicloud/css/api.css",PATH + '/public/css/api.css');
     });
 }
 
@@ -273,15 +274,12 @@ function buildJs() {
       config.webapp && copyTemplate("platform/web/js/bui.js",PATH + '/public/js/bui.js');
       
       // 更新 bingotouch
-      config.bingotouch && copyTemplate("platform/bingotouch/js/bui.js", PATH + '/public/js/bui.js');
-      config.bingotouch && copyTemplate("platform/bingotouch/js/cordova.js", PATH + '/public/js/cordova.js');
-      config.bingotouch && copyTemplate("platform/bingotouch/js/bingotouch.js", PATH + '/public/js/bingotouch.js');
+      ( config.bingotouch || config.link ) && copyTemplate("platform/bingotouch/js/bui.js", PATH + '/public/js/bui.js');
+      ( config.bingotouch || config.link ) && copyTemplate("platform/bingotouch/js/cordova.js", PATH + '/public/js/cordova.js');
+      ( config.bingotouch || config.link ) && copyTemplate("platform/bingotouch/js/bingotouch.js", PATH + '/public/js/bingotouch.js');
       
       // 更新 link
-      config.link && copyTemplate("platform/link/js/bui.js", PATH + '/public/js/bui.js');
-      config.link && copyTemplate("platform/link/js/cordova.js", PATH + '/public/js/cordova.js');
       config.link && copyTemplate("platform/link/js/linkplugins.js", PATH + '/public/js/linkplugins.js');
-      config.link && copyTemplate("platform/link/js/bingotouch.js", PATH + '/public/js/bingotouch.js');
 
       // 更新 apicloud 
       config.apicloud && copyTemplate("platform/apicloud/js/bui.js", PATH + '/public/js/bui.js');

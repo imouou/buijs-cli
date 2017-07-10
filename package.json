@@ -1,6 +1,6 @@
 {
   "name": "buijs",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "BUI 开发工程包",
   "main": "index.js",
   "bin": {
