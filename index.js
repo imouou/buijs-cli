@@ -250,7 +250,7 @@ if( config.update ){
   });
 
   console.info(platform.join("&")+" build complete.");
-  //console.log(" use \"npm run sass\" to watch the sass file changes.");
+  console.info(" use \"npm run sass\" to watch the sass file changes.");
 }
 
 // 更新样式

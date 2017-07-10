@@ -1,9 +1,9 @@
 # buijs 命令行工具
 
-## 简介
-buijs 是一个半自动工程化的命令工具, 只负责生成对应平台的必须的目录文件,并引用好依赖, 其它,例如 sass的编译, 推荐使用 考拉或者prepros 的sass可视化工具编译, 当然你也可以自行安装 gulp 或者 webpack 的sass依赖进行编译.
+## 一、简介
+buijs 是一个半自动工程化的命令工具, 只负责生成对应平台的必须的目录文件,并引用好依赖.
 
-## 安装buijs命令行工具
+## 二、安装buijs命令行工具
 
 windows: 
 ```
@@ -15,7 +15,7 @@ mac:
 sudo npm install -g buijs
 ```
 
-## 更新
+## 三、版本更新
 
 ### 1. 更新buijs包
 
@@ -41,19 +41,19 @@ buijs -u
 buijs -u -b
 ```
 
-## 初始化工程目录:
+## 四、初始化工程目录:
 
-webapp: 默认就是引入webapp开发工程目录
+webapp: webapp开发工程包
 ```
 buijs
 ```
 
-Bingotouch: 引入Bingotouch打包工程目录
+Bingotouch: Bingotouch打包工程目录,包含res文件夹
 ```
 buijs -b
 ```
 
-Link: 引入link轻应用
+Link: Link开发工程包
 ```
 buijs -l
 ```
@@ -73,7 +73,26 @@ buijs -d
 buijs -w
 ```
 
-## 目录说明:
+## 五、编译说明:
+
+1. 有node环境可以直接用`npm run sass` 直接监听style.scss 的文件生成, 但必须先安装了ruby && sass 的编译环境( <a href="https://www.sass.hk/install/" target="_blank">安装教程</a> ).
+
+### 安装 sass
+
+windows: 
+```
+gem install sass
+```
+
+mac: 
+```
+sudo gem install sass
+```
+
+2. 没有node环境,默认生成的目录包里面,有一份Koala的配置文件,可以<a href="http://koala-app.com/index-zh.html" target="_blank">下载Koala应用,拖拽scss文件夹到考拉应用里面,会自动生成.</a>
+
+
+## 六、目录说明:
 
 ** 应用包文件夹说明: **
 |- public
