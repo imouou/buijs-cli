@@ -18,15 +18,16 @@ sudo npm install -g buijs
 ## 三、版本更新
 
 ### 1. 更新buijs包
+先重新安装 buijs
 
 windows: 
 ```
-npm update -g buijs
+npm install -g buijs
 ```
 
 mac: 
 ```
-sudo npm update -g buijs
+sudo npm install -g buijs
 ```
 
 ### 2. 更新工程里bui库的js及css
