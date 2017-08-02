@@ -125,3 +125,20 @@
 }
 
 
+// 渐变
+@mixin bgToLeft($start,$end){
+  background-image:-webkit-linear-gradient(to left, $start,$end);
+  background-image:linear-gradient(to left, $start,$end);
+}
+@mixin bgToRight($start,$end){
+  background-image:-webkit-linear-gradient(to right, $start,$end);
+  background-image:linear-gradient(to right, $start,$end);
+}
+@mixin bgToTop($start,$end){
+  background-image:-webkit-linear-gradient(to top, $start,$end);
+  background-image:linear-gradient(to top, $start,$end);
+}
+@mixin bgToBottom($start,$end){
+  background-image:-webkit-linear-gradient(to bottom, $start,$end);
+  background-image:linear-gradient(to bottom, $start,$end);
+} 
