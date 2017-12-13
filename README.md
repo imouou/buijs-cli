@@ -51,15 +51,19 @@ buijs create demo -t link
 
 ## 五、目录说明: 
 
-src里面是建议使用sass文件作为你的业务源码存储目录,提供出去只需要public目录就可以.
+** 单页应用包文件夹说明: **
 
-** 应用包文件夹说明: **
-
-|- css / bui.css            // BUI库的样式文件
-|- font /                   // 字体图标目录
-|- images /                 // 应用图片目录
-|- js  / zepto.js           // Zeptojs库
-|- js  / bui.js             // BUI库的脚本文件
-|- js  / app /              // 应用业务文件夹
-
-
+| **路径**   | **描述**           |
+|:------------- |:-------------------|
+| index.html     |入口文件    |
+| index.js       |入口的脚本    |
+| css / bui.css  |BUI库的样式文件    |
+| font /         |字体图标目录    |
+| images /       |应用图片目录    |
+| js  / zepto.js  | bui的依赖库  |
+| js  / plugins/ fastclick.js  |  移动端快速点击的插件   |
+| js  / bui.js       |  BUI交互控件库   |
+| pages       | 模块目录    |
+| pages / main       | 默认 main 模块    |
+| pages / main / main.html      | 默认 main 模块模板    |
+| pages / main / main.js      | 默认 main 模块定义脚本    |
