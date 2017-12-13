@@ -1,26 +1,34 @@
 {
   "name": "buijs",
-  "version": "0.1.4",
-  "description": "BUI 开发工程包",
-  "main": "index.js",
+  "version": "0.2.0",
+  "description": "bui命令行工具，帮助开发人员快速创建bui工程模板, 基于bui-weex-toolkit制作 ",
+  "main": "buijs-cli.js",
+  "scripts": {},
+  "author": "王伟深 <imouou@hotmail.com>",
+  "license": "Apache 2.0",
   "bin": {
-    "buijs":"./index.js"
+    "buijs": "./buijs-cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imouou/buijs-cli.git"
   },
   "keywords": [
     "bui",
-    "buijs"
+    "bui-cli",
+    "buijs",
+    "buijs-cli"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/imouou/buijs-cli.git"
-  },
-  "scripts": {
-    "test": "echo Error: no test specified && exit 1"
-  },
-  "author": "imouou@gmail.com",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/imouou/buijs-cli/issues"
   },
-  "homepage": "https://github.com/imouou/buijs-cli#readme"
+  "homepage": "https://github.com/imouou/buijs-cli",
+  "dependencies": {
+    "chalk": "^1.1.3",
+    "decompress": "^4.2.0",
+    "fs-extra": "^3.0.1",
+    "jsonfile": "^3.0.0",
+    "request": "^2.81.0",
+    "yargs": "^8.0.2"
+  }
 }
