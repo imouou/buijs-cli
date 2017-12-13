@@ -63,7 +63,7 @@ buijs create demo -t link
 | js  / zepto.js  | bui的依赖库  |
 | js  / plugins/ fastclick.js  |  移动端快速点击的插件   |
 | js  / bui.js       |  BUI交互控件库   |
-| pages       | 模块目录    |
+| pages /      | 模块目录    |
 | pages / main       | 默认 main 模块    |
 | pages / main / main.html      | 默认 main 模块模板    |
 | pages / main / main.js      | 默认 main 模块定义脚本    |

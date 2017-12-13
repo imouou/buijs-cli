@@ -1,6 +1,6 @@
 {
   "name": "buijs",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "bui命令行工具升级了，基于bui-weex-toolkit制作, 帮助开发人员快速创建bui工程模板, 之前的命令行已经无效, 请仔细阅读说明文档. ",
   "main": "buijs-cli.js",
   "scripts": {},

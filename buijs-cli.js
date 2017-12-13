@@ -187,6 +187,9 @@ function initProject(name, version, templateName) {
     fetchRelease(version, function (releasePath) {
         log("Copying template file...")
         fs.copySync(releasePath, name);
+        // 删除模板文件夹
+        let templateDir = path.join(name, templateDirName);
+        
         log("Project created.");
         if (templateName) {
             log("Initing template...");
@@ -204,8 +207,10 @@ function initProject(name, version, templateName) {
             // 复制模板
             fs.copySync(tPath, srcPath);
             log("Copy template done.");
-            // 删除模板文件夹
-            let templateDir = path.join(name, templateDirName);
+            // 最后删除模板文件夹
+            fs.removeSync(templateDir);
+        }else{
+            // 最后删除模板文件夹
             fs.removeSync(templateDir);
         }
     });
