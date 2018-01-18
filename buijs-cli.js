@@ -11,8 +11,10 @@ var request = require('request').defaults({
         'User-Agent': 'node request' // GitHub ask for this.
     }
 });
+var confirm = require('prompt-confirm');
 
-const templateDirName = "templates"
+const templateDirName = "templates";
+const platformDirName = "platforms";
 
 const infoLabel = chalk.inverse.green("INFO");
 const warningLabel = chalk.inverse("WARN");
@@ -177,44 +179,103 @@ function fetchRelease(version, cb) {
  * 复制 template 文件以创建 bui 工程.
  * @param  {string} name project name.
  * @param  {string} [version] template version.
- * @param  {string} [templateName] init src/ dir with specified template
+ * @param  {string} [templateName] init templates/ dir with specified template
+ * @param  {string} [platformName] init platforms/ dir with specified template
  */
-function initProject(name, version, templateName) {
+function initProject(name, version, templateName, platformName) {
+    // 如果项目名称存在
     if (fs.existsSync(name)) {
-        error(`File ${name} already exist.`);
-    }
-    log("Creating project...");
-    fetchRelease(version, function (releasePath) {
-        log("Copying template file...")
-        fs.copySync(releasePath, name);
-        // 删除模板文件夹
-        let templateDir = path.join(name, templateDirName);
-        
-        log("Project created.");
-        if (templateName) {
-            log("Initing template...");
-            let tPath = path.join(name, templateDirName, templateName);
-
-            if (!fs.existsSync(tPath)) {
-                warn(`Template ${templateName} not exist. Using default template.`);
-                return
+        warn(`Project already exist.`);
+        var prompt = new confirm('Do you Want to overwrite the project directory?');
+        prompt.ask(function (answer) {
+            if( !answer ){
+                // error(`File already exist.`);
+                return;
+            }else{
+                log("Overwrite project...");
+                createProject();
             }
-            // 把模板里面的目录,替换public目录
-            let srcPath = path.join(name);
-            // 删除跟目录
-            emptyDir(srcPath)
-            // fs.removeSync(srcPath);
-            // 复制模板
-            fs.copySync(tPath, srcPath);
-            log("Copy template done.");
-            // 最后删除模板文件夹
-            fs.removeSync(templateDir);
-        }else{
-            // 最后删除模板文件夹
-            fs.removeSync(templateDir);
-        }
-    });
+        });
+        return;
+    }else{
+        log("Creating project...");
+        createProject();
+    }
+
+    // 创建工程
+    function createProject() {
+        fetchRelease(version, function (releasePath) {
+            log("Copying default template file...");
+            fs.copySync(releasePath, name);
+            // 模板文件夹路径
+            let templateDir = path.join(name, templateDirName);
+            // 平台文件夹路径
+            let platformDir = path.join(name, platformDirName);
+            
+            if (templateName || platformName ) {
+                // 删除根路径并复制模板
+                if( templateName ){
+                    log("Copying template file.");
+                    initTemplate(name,templateDirName,templateName);
+                }
+                // 复制平台需要的文件
+                if( platformName ){
+                    log("Copying platform file.");
+                    initPlatform(name,platformDirName,platformName);
+                }
+
+                // 删除模板文件夹
+                fs.removeSync(templateDir);
+                // 删除平台文件夹
+                fs.removeSync(platformDir);
+            }else{
+                // 最后删除模板文件夹
+                fs.removeSync(templateDir);
+                // 最后删除平台文件夹
+                fs.removeSync(platformDir);
+            }
+            log("Project created.");
+
+            // 初始化平台
+            function initPlatform(name,platformDirName,platformName) {
+                log("Initing platform...");
+                // 平台路径 /platforms/link
+                let pPath = path.join(name, platformDirName, platformName);
+
+                if (!fs.existsSync(pPath)) {
+                    warn(`Platform not exist. Using default platform webapp.`);
+                    return
+                }
+                // 把模板里面的目录,替换public目录
+                let srcPath = path.join(name);
+
+                // 复制平台覆盖
+                fs.copySync(pPath, srcPath, {force: true});
+                log("Copy platforms done.");
+            }
+            // 初始化模板
+            function initTemplate(name,templateDirName,templateName) {
+                log("Initing template...");
+                // 模板路径 /templates/tab
+                let tPath = path.join(name, templateDirName, templateName);
+                if (!fs.existsSync(tPath)) {
+                    warn(`Template not exist. Using default template.`);
+                    return
+                }
+                // 把模板里面的目录,替换public目录
+                let srcPath = path.join(name);
+                // 删除根目录
+                // emptyDir(srcPath)
+                // 复制模板
+                fs.copySync(tPath, srcPath, {force: true});
+                log("Copy template done.");
+            }
+        });
+    }
+    
+
 }
+
 
 // 清空某个文件夹目录
 function emptyDir(fileUrl){   
@@ -237,6 +298,7 @@ function emptyDir(fileUrl){
     }
 }
 
+// 获取版本列表
 function displayReleases() {
     log("Fetching version info...");
     request.get(BUI_TEMPLATE_RELEASE_URL, function(err, res, body){
@@ -250,9 +312,10 @@ function displayReleases() {
     });
 }
 
-function getAvailableTemplateNames(projectPath) {
+// 获取模板列表
+function getAvailableTemplateNames(projectPath,tplName) {
     let result = [];
-    let tDir = path.join(projectPath, templateDirName);
+    let tDir = path.join(projectPath, tplName);
     if (!fs.existsSync(tDir)) return result;
     let files = fs.readdirSync(tDir);
     for (let f of files) {
@@ -266,15 +329,18 @@ function getAvailableTemplateNames(projectPath) {
 var args = yargs
     .command({
         command: "create <name> [version]",
-        desc: "Create a bui-weex project. Default to use latest version of template.",
+        desc: "Create a bui project. Default to use latest version of template. try to join argument '-t' with template name to change template, join argument '-p' with platform name to change platform.",
         builder: (yargs) => {
             yargs.option('template', {
                 alias: 't',
                 describe: 'Init with specified template.'
+            }).option('platform', {
+                alias: 'p',
+                describe: 'Init with specified platform.'
             })
         },
         handler: function(argv) {
-            initProject(argv.name, argv.version, argv.template);
+            initProject(argv.name, argv.version, argv.template, argv.platform);
         }
     })
     .command({
@@ -289,7 +355,7 @@ var args = yargs
         desc: "List available templates for the newest release.",
         handler: function() {
             fetchRelease(null, (projectPath) => {
-                let names = getAvailableTemplateNames(projectPath);
+                let names = getAvailableTemplateNames(projectPath,templateDirName);
                 if (names.length) {
                     console.log("Available templates:");
                     names.forEach(n => {
@@ -297,6 +363,23 @@ var args = yargs
                     })
                 } else {
                     console.log("No templates available.");
+                }
+            })
+        }
+    })
+    .command({
+        command: "list-platform",
+        desc: "List available platform for the newest release.",
+        handler: function() {
+            fetchRelease(null, (projectPath) => {
+                let names = getAvailableTemplateNames(projectPath,platformDirName);
+                if (names.length) {
+                    console.log("Available platforms:");
+                    names.forEach(n => {
+                        console.log(chalk.green.underline(n));
+                    })
+                } else {
+                    console.log("No platforms available.");
                 }
             })
         }

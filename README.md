@@ -25,7 +25,8 @@ sudo npm install -g buijs
 | `buijs list`       |显示可用的版本    |
 | `buijs list-template`       |显示可用的模板    |
 | `buijs create <projectName> [version]`       |创建bui默认工程    |
-| `buijs create <projectName> [version] -t link`       |创建bui示例工程，可以指定模版版本    |
+| `buijs create <projectName> [version] -t tab`       |创建bui tab在底部的模板工程,默认平台 webapp    |
+| `buijs create <projectName> [version] -t tab -p link`       |创建bui tab在底部的模板工程,更改平台为 link    |
 
 
 ## 四、初始化工程目录:
@@ -35,6 +36,21 @@ sudo npm install -g buijs
 webapp: webapp开发工程包 demo 为工程名称( 默认为单页开发工程 )
 ```
 buijs create demo
+```
+
+### 创建底部TAB模板工程 (demo 为工程名称, 单页工程)
+
+```bash
+
+buijs create demo -t tab
+
+```
+### 创建侧边栏模板工程 (demo 为工程名称, 单页工程)
+
+```bash
+
+buijs create demo -t sidebar
+
 ```
 
 微信: 仿weui的工程示例 ( 默认为单页开发工程 )

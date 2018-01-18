@@ -28,6 +28,7 @@
     "decompress": "^4.2.0",
     "fs-extra": "^3.0.1",
     "jsonfile": "^3.0.0",
+    "prompt-confirm": "^1.2.0",
     "request": "^2.81.0",
     "yargs": "^8.0.2"
   }
