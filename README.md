@@ -1,7 +1,7 @@
 # buijs 命令行工具
 
 ## 一、简介
-buijs 是[BUI Webapp交互框架](http://www.easybui.com) 的npm命令工具(专注webapp快速开发), 用于快速生成指定平台与模板必须的工程文件. 需要先安装 [node环境](https://nodejs.org/zh-cn/) 才能使用npm命令. 
+[buijs](https://github.com/imouou/buijs-cli) 是[BUI Webapp交互框架](http://www.easybui.com) 的npm命令工具(专注webapp快速开发), 用于快速生成指定平台与模板必须的工程文件. 需要先安装 [node环境](https://nodejs.org/zh-cn/) 才能使用npm命令. 
 
 通过命令行构建的工程,每次都会自动获取最新的BUI模板工程, 并且可以指定模板及平台.  [BUI模板图片预览](https://github.com/imouou/BUI-Template/)
 
