@@ -183,10 +183,13 @@ function fetchRelease(version, cb) {
  * @param  {string} [platformName] init platforms/ dir with specified template
  */
 function initProject(name, version, templateName, platformName) {
+    // 项目是否已经存在的检测
+    var isExistProject = false;
     // 如果项目名称存在
     if (fs.existsSync(name)) {
         warn(`Project already exist.`);
         var prompt = new confirm('Do you Want to overwrite the project directory?');
+        isExistProject = true;
         prompt.ask(function (answer) {
             if( !answer ){
                 // error(`File already exist.`);
@@ -199,75 +202,82 @@ function initProject(name, version, templateName, platformName) {
         return;
     }else{
         log("Creating project...");
+        isExistProject = false;
         createProject();
     }
 
     // 创建工程
     function createProject() {
         fetchRelease(version, function (releasePath) {
+        // 工程缓存路径 /demo/cache
+        let cachePath = path.join(name,"cache");
+        // 项目模板文件夹路径 /demo/templates
+        let templateDir = path.join(name, templateDirName);
+        // 项目平台文件夹路径 /demo/platforms
+        let platformDir = path.join(name, platformDirName);
+
             log("Copying default template file...");
-            fs.copySync(releasePath, name);
-            // 模板文件夹路径
-            let templateDir = path.join(name, templateDirName);
-            // 平台文件夹路径
-            let platformDir = path.join(name, platformDirName);
-            
+            // 复制文件到项目的cache目录
+            fs.copySync(releasePath, cachePath );
+            // 再从cache复制到根目录,防止多次创建覆盖
+            if( !isExistProject ){
+                fs.copySync(cachePath, name );
+            }
+
             if (templateName || platformName ) {
+
+                // 缓存模板文件夹路径 /demo/cache/templates/
+                let templateCacheDir = path.join(cachePath, templateDirName);
+                // 模板平台文件夹路径 /demo/cache/platforms/
+                let platformCacheDir = path.join(cachePath, platformDirName);
+                
                 // 删除根路径并复制模板
                 if( templateName ){
+                    // /demo/cache/templates/main-tab
+                    let templateNameCache = path.join(templateCacheDir, templateName );
                     log("Copying template file.");
-                    initTemplate(name,templateDirName,templateName);
+                    initTemplate(templateNameCache);
                 }
                 // 复制平台需要的文件
                 if( platformName ){
+                    // /demo/cache/platforms/link
+                    let platformNameCache = path.join(platformCacheDir, platformName );
                     log("Copying platform file.");
-                    initPlatform(name,platformDirName,platformName);
+                    initPlatform(platformNameCache);
                 }
 
-                // 删除模板文件夹
-                fs.removeSync(templateDir);
-                // 删除平台文件夹
-                fs.removeSync(platformDir);
-            }else{
-                // 最后删除模板文件夹
-                fs.removeSync(templateDir);
-                // 最后删除平台文件夹
-                fs.removeSync(platformDir);
             }
-            log("Project created.");
+
+            // 最后删除模板文件夹
+            fs.removeSync(templateDir);
+            // 最后删除平台文件夹
+            fs.removeSync(platformDir);
+            // 删除缓存
+            fs.removeSync(cachePath);
+            log("Project created done.");
 
             // 初始化平台
-            function initPlatform(name,platformDirName,platformName) {
+            function initPlatform(platformDirName) {
                 log("Initing platform...");
-                // 平台路径 /platforms/link
-                let pPath = path.join(name, platformDirName, platformName);
-
-                if (!fs.existsSync(pPath)) {
+                // 平台路径 /cache/platforms/link
+                if (!fs.existsSync(platformDirName)) {
                     warn(`Platform not exist. Using default platform webapp.`);
                     return
                 }
-                // 把模板里面的目录,替换public目录
-                let srcPath = path.join(name);
-
-                // 复制平台覆盖
-                fs.copySync(pPath, srcPath, {force: true});
+                // 项目路径 /
+                fs.copySync(platformDirName, name, {force: true});
                 log("Copy platforms done.");
             }
             // 初始化模板
-            function initTemplate(name,templateDirName,templateName) {
+            function initTemplate(templateDirName) {
                 log("Initing template...");
-                // 模板路径 /templates/tab
-                let tPath = path.join(name, templateDirName, templateName);
-                if (!fs.existsSync(tPath)) {
-                    warn(`Template not exist. Using default template.`);
-                    return
+                // 模板路径 /cache/templates/main-tab
+                if (!fs.existsSync(templateDirName)) {
+                    warn(`Template not exist. Using default Template.`);
+                    return;
                 }
-                // 把模板里面的目录,替换public目录
-                let srcPath = path.join(name);
-                // 删除根目录
-                // emptyDir(srcPath)
-                // 复制模板
-                fs.copySync(tPath, srcPath, {force: true});
+                // 项目路径 /
+                fs.copySync(templateDirName, name, {force: true});
                 log("Copy template done.");
             }
         });
