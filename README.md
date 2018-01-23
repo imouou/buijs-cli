@@ -28,6 +28,7 @@ sudo npm install -g buijs
 buijs create demo 
 ```
 **默认模板预览**  更多模板点击这里 [BUI模板图片预览](https://github.com/imouou/BUI-Template/)
+
 <img src="https://raw.githubusercontent.com/imouou/BUI-Template/master/preview.png" alt="">
 
 
