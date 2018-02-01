@@ -22,7 +22,7 @@ sudo npm install -g buijs
 ![buijs 创建工程预览](http://www.easybui.com/docs/images/router/buijs-create-demo_low.gif)
 
 
-### 创建默认Webapp工程 (demo 为工程名称)
+### 创建默认Webapp工程 (demo 为工程名称, 如果没有,则在当前目录)
 
 ```bash
 buijs create demo 
@@ -34,19 +34,23 @@ buijs create demo
 
 ## 四、命令列表
 
+注意: 中括号为可选,如果没有采用默认
+
 | **命令行**   | **描述**           |
 |:------------- |:-------------------|
 | `buijs -v`       |查看当前工具的版本    |
 | `buijs -h`       |命令帮助信息    |
+| `buijs create `  |在当前目录创建bui webapp默认工程    |
+| `buijs create [projectName] [version] [-t templateName] [-p platformName]`       |创建工程,支持指定版本,指定模板,指定平台    |
+| `buijs update` | 在当前项目更新 bui或平台为最新版本    |
+| `buijs update [projectName] [version] [-p platformName]` | 更新bui为某个版本,某个平台    |
 | `buijs list`       |显示可用的版本    |
 | `buijs list-template`       |显示可用的模板列表 [BUI模板图片预览](https://github.com/imouou/BUI-Template/)    |
 | `buijs list-platform`       |显示可用的平台列表    |
-| `buijs create <projectName> [version]`       |创建bui默认工程    |
-| `buijs create <projectName> [version] -t tab`       |创建bui tab在底部的模板工程,默认平台 webapp    |
-| `buijs create <projectName> [version] -t tab -p link`       |创建bui tab在底部的模板工程,更改平台为 link    |
 
 
-### 创建某个模板工程 ( main-tab 为模板名称)
+## 五、命令示例
+### 创建某个模板工程 ( demo为项目名称,没有则是当前目录 | main-tab 为模板名称)
 可以先查看有什么模板 `buijs list-template`, [BUI模板图片预览](https://github.com/imouou/BUI-Template/)
 
 ```bash
@@ -62,6 +66,7 @@ buijs create demo -t main-tab
 模板名以 `main-`开头 会覆盖 main 模块, 例如: 模板名 `main-tab` 预览地址 `index.html`
 模板名以 `page-`开头 会新增模块, 例如: 模板名 `page-sidebar` 预览地址 `index.html#pages/sidebar/sidebar`
 2. 同一个工程只能创建一个平台, 多次创建会相互覆盖;
+3. 工程目录为可选, 没有则是当前目录;
 
 
 ### 创建指定平台工程 ( dcloud 为平台名称 ) 
@@ -87,7 +92,23 @@ buijs create demo -t sidebar -p dcloud
 ```bash
 buijs create demo v1.0
 ```
-## 五、目录说明: 
+
+
+### 更新工程为最新bui版本
+
+```bash
+buijs update demo
+```
+
+
+### 更新工程为最新bui版本及平台
+
+```bash
+buijs update demo -p bingotouch
+```
+
+
+## 六、目录说明: 
 
 ** 单页应用包文件夹说明: **
 

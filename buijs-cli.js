@@ -177,30 +177,42 @@ function fetchRelease(version, cb) {
 
 /**
  * 复制 template 文件以创建 bui 工程.
- * @param  {string} name project name.
+ * @param  {string} [name] project name.
  * @param  {string} [version] template version.
  * @param  {string} [templateName] init templates/ dir with specified template
  * @param  {string} [platformName] init platforms/ dir with specified template
  */
-function initProject(name, version, templateName, platformName) {
+function initProject(names, version, templateName, platformName) {
+
+    // 获得当前路径
+    let name = names || path.resolve('./');
     // 项目是否已经存在的检测
     var isExistProject = false;
-    // 如果项目名称存在
-    if (fs.existsSync(name)) {
-        warn(`Project already exist.`);
-        var prompt = new confirm('Do you Want to overwrite the project directory?');
-        isExistProject = true;
-        prompt.ask(function (answer) {
-            if( !answer ){
-                // error(`File already exist.`);
-                return;
-            }else{
-                log("Overwrite project...");
-                createProject();
-            }
-        });
-        return;
-    }else{
+    // 如果用户有传项目名称,没有则在当前目录创建,检测是否存在js目录,用于检测
+    if ( names ) {
+        checkProjectIsExist(names);
+    }else {
+        checkProjectIsExist("js");
+    }
+
+    // 检测工程目录是否存在, 警告用户会覆盖工程
+    function checkProjectIsExist(projectname) {
+        // 如果存在js目录
+        if( fs.existsSync(projectname) ){
+            warn(`Project already exist.`);
+            var prompt = new confirm('Do you Want to overwrite the project directory?');
+            isExistProject = true;
+            prompt.ask(function (answer) {
+                if( !answer ){
+                    // error(`File already exist.`);
+                    return;
+                }else{
+                    log("Overwrite project...");
+                    createProject();
+                }
+            });
+            return;
+        }
         log("Creating project...");
         isExistProject = false;
         createProject();
@@ -220,8 +232,11 @@ function initProject(name, version, templateName, platformName) {
             // 复制文件到项目的cache目录
             fs.copySync(releasePath, cachePath );
             // 再从cache复制到根目录,防止多次创建覆盖
+            // 如果没有加参数,创建默认工程不会覆盖之前的工程
             if( !isExistProject ){
                 fs.copySync(cachePath, name );
+            }else{
+                log("project exists, it will not overwrite the default project");
             }
 
             if (templateName || platformName ) {
@@ -265,7 +280,7 @@ function initProject(name, version, templateName, platformName) {
                     return
                 }
                 // 项目路径 /
-                fs.copySync(platformDirName, name, {force: true});
+                fs.copySync(platformDirName, name);
                 log("Copy platforms done.");
             }
             // 初始化模板
@@ -277,8 +292,119 @@ function initProject(name, version, templateName, platformName) {
                     return;
                 }
                 // 项目路径 /
-                fs.copySync(templateDirName, name, {force: true});
+                fs.copySync(templateDirName, name);
                 log("Copy template done.");
+            }
+        });
+    }
+    
+
+}
+
+/**
+ * 升级项目的bui版本.
+ * @param  {string} [name] project name.
+ * @param  {string} [version] bui version.
+ * @param  {string} [platformName] init platforms/ dir with specified template
+ */
+function updateProject(names, version, platformName) {
+    // 获得当前路径
+    let name = names || path.resolve('./');
+
+    // 如果用户有传项目名称,没有则在当前目录创建,检测是否存在js目录,用于检测
+    if ( names ) {
+        checkProjectIsExist(names);
+    }else {
+        checkProjectIsExist("js");
+    }
+
+    // 检测工程目录是否存在, 警告用户会覆盖工程
+    function checkProjectIsExist(projectname) {
+        // 如果存在js目录
+        if( fs.existsSync(projectname) ){
+            warn(`Project already exist.`);
+            var prompt = new confirm('Do you Want to overwrite the file bui.js & bui.css ?');
+            prompt.ask(function (answer) {
+                if( !answer ){
+                    // error(`File already exist.`);
+                    return;
+                }else{
+                    log("Overwrite project...");
+                    createProject();
+                }
+            });
+            return;
+        }
+        log("Updateing project...");
+        createProject();
+    }
+    // 创建工程
+    function createProject() {
+        // 获取最新版
+        fetchRelease(version, function (releasePath) {
+        // 工程缓存路径 /demo/cache
+        let cachePath = path.join(name,"cache");
+        let buiCssCachePath = path.join(cachePath,"css");
+        let buiCssFileCachePath = path.join(buiCssCachePath,"bui.css");
+        let buiJsCachePath = path.join(cachePath,"js");
+        let buiJsFileCachePath = path.join(buiJsCachePath,"bui.js");
+        // 项目目录
+        let buiCssPath = path.join(name,"css");
+        let buiCssFilePath = path.join(buiCssPath,"bui.css");
+        let buiJsPath = path.join(name,"js");
+        let buiJsFilePath = path.join(buiJsPath,"bui.js");
+
+        // 项目平台文件夹路径 /demo/platforms
+        let platformDir = path.join(name, platformDirName);
+
+            log("copy cache file...");
+            try{
+                // 复制文件到项目的cache目录
+                fs.copySync(releasePath, cachePath );
+                // 再从cache复制bui.css文件到根目录,样式是通用的
+                fs.copySync(buiCssFileCachePath, buiCssFilePath);
+            }catch(e){
+                warn(`copy bui.css file error`);
+            }
+
+            if ( platformName ) {
+
+                // 模板平台文件夹路径 /demo/cache/platforms/
+                let platformCacheDir = path.join(cachePath, platformDirName);
+                
+                // 复制平台需要的文件
+                if( platformName ){
+                    // /demo/cache/platforms/link
+                    let platformNameCache = path.join(platformCacheDir, platformName );
+                    log("Update platform file.");
+                    initPlatform(platformNameCache);
+                }
+
+            }else{
+                try{
+                    // 再从cache复制bui.js文件到根目录
+                    fs.copySync(buiJsFileCachePath, buiJsFilePath);
+                }catch(e){
+                    warn(`copy bui.js file error`);
+                }
+                
+            }
+
+            // 删除缓存
+            fs.removeSync(cachePath);
+            log("Project update done.");
+
+            // 初始化平台
+            function initPlatform(platformDirName) {
+                log("Update platform...");
+                // 平台路径 /cache/platforms/link
+                if (!fs.existsSync(platformDirName)) {
+                    warn(`Platform not exist. Using default platform webapp.`);
+                    return
+                }
+                // 项目路径 /
+                fs.copySync(platformDirName, name);
+                log("Update platforms done.");
             }
         });
     }
@@ -338,7 +464,7 @@ function getAvailableTemplateNames(projectPath,tplName) {
 
 var args = yargs
     .command({
-        command: "create <name> [version]",
+        command: "create [name] [version]",
         desc: "Create a bui project. Default to use latest version of template. try to join argument '-t' with template name to change template, join argument '-p' with platform name to change platform.",
         builder: (yargs) => {
             yargs.option('template', {
@@ -351,6 +477,19 @@ var args = yargs
         },
         handler: function(argv) {
             initProject(argv.name, argv.version, argv.template, argv.platform);
+        }
+    })
+    .command({
+        command: "update [name] [version]",
+        desc: "update a bui project. Default to use latest version of template. try to join argument '-p' with platform name to update platform.",
+        builder: (yargs) => {
+            yargs.option('platform', {
+                alias: 'p',
+                describe: 'Update with specified platform.'
+            })
+        },
+        handler: function(argv) {
+            updateProject(argv.name, argv.version, argv.platform);
         }
     })
     .command({
