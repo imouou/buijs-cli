@@ -394,6 +394,17 @@ function updateProject(names, version, platformName) {
             fs.removeSync(cachePath);
             log("Project update done.");
 
+            // 过滤掉 index.html, index.js 文件
+            function filterFunc(src, dest) {
+                // cache/index.html , cache/index.js
+                let indexHtml = path.join(src,"index.html");
+                let indexJs = path.join(src,"index.js");
+                // 删除index.html,index.js文件以后再复制,防止覆盖用户原本的业务
+                    fs.existsSync(indexHtml) && fs.unlink(indexHtml);
+                    fs.existsSync(indexJs) && fs.unlink(indexJs);
+
+                    return true;
+            }
             // 初始化平台
             function initPlatform(platformDirName) {
                 log("Update platform...");
@@ -403,7 +414,7 @@ function updateProject(names, version, platformName) {
                     return
                 }
                 // 项目路径 /
-                fs.copySync(platformDirName, name);
+                fs.copySync(platformDirName, name, { filter: filterFunc });
                 log("Update platforms done.");
             }
         });
