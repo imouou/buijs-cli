@@ -15,6 +15,7 @@ var confirm = require('prompt-confirm');
 
 const templateDirName = "templates";
 const platformDirName = "platforms";
+const devDirName = "dev";
 
 const infoLabel = chalk.inverse.green("INFO");
 const warningLabel = chalk.inverse("WARN");
@@ -129,21 +130,41 @@ function fetchRelease(version, cb) {
 
     let url = getReleaseUrl(version);
     log(`Fetching release: ${version ? version : "latest"}...`);
+    // last release 版本
+    let lasRelease = function (argument) {
+        // When fetch error, and no version specified, try to figure out the latest release.
+        var latestRleaseInfo = null;
+        for (let tag in releasesInfo) {
+            let info = releasesInfo[tag];
+            if (!latestRleaseInfo) {
+                latestRleaseInfo = info;
+            } else {
+                if (Date.parse(info.time) > Date.parse(latestRleaseInfo.time)) latestRleaseInfo = info;
+            }
+        }
+
+        return latestRleaseInfo;
+    }
     request(url, function (err, res, body) {
-        if (err) error(err);
+
+        if (err) {
+            // When fetch error, and no version specified, try to figure out the latest release.
+            let latestRleaseInfo = lasRelease();
+            
+            if (latestRleaseInfo) {
+                // Figured out latest release in cache.
+                log(`Found latest release in cache: ${latestRleaseInfo.tag}.`)
+                cb(path.join(CACHE_TEMPLATE_PATH, latestRleaseInfo.path));
+                return;
+            }
+            error(err);
+        }
         if (res.statusCode != 200) {
             warn(`Failed to fetch ${url} - ${res.statusCode}: ${res.body}`);
             if (!version) {
                 // When fetch error, and no version specified, try to figure out the latest release.
-                var latestRleaseInfo = null;
-                for (let tag in releasesInfo) {
-                    let info = releasesInfo[tag];
-                    if (!latestRleaseInfo) {
-                        latestRleaseInfo = info;
-                    } else {
-                        if (Date.parse(info.time) > Date.parse(latestRleaseInfo.time)) latestRleaseInfo = info;
-                    }
-                }
+                let latestRleaseInfo = lasRelease();
+                
                 if (latestRleaseInfo) {
                     // Figured out latest release in cache.
                     log(`Found latest release in cache: ${latestRleaseInfo.tag}.`)
@@ -172,7 +193,7 @@ function fetchRelease(version, cb) {
             cb(targetPath);
             return;
         });
-    });
+    })
 }
 
 /**
@@ -181,24 +202,26 @@ function fetchRelease(version, cb) {
  * @param  {string} [version] template version.
  * @param  {string} [templateName] init templates/ dir with specified template
  * @param  {string} [platformName] init platforms/ dir with specified template
+ * @param  {string} [dev] init NPM Package.json
  */
 function initProject(names, version, templateName, platformName) {
-
     // 获得当前路径
     let name = names || path.resolve('./');
-    // 项目是否已经存在的检测
-    var isExistProject = false;
-    // 如果用户有传项目名称,没有则在当前目录创建,检测是否存在js目录,用于检测
-    if ( names ) {
-        checkProjectIsExist(names);
-    }else {
-        checkProjectIsExist("js");
-    }
+    // 通过判断当前目录下是否有
+    let hasJsFolder = fs.existsSync(path.join(name,"js")) || fs.existsSync(path.join(name,"pages"));
+    // 如果是开发模式,源码全在src目录,并且有 package.json 
+    let rootName = hasJsFolder ? name : name+'/src' ;
 
+    // 项目是否已经存在的检测
+    let isExistProject = false;
+
+    // 如果用户有传项目名称,没有则在当前目录创建,检测是否存在js目录,用于检测
+    checkProjectIsExist();
+    
     // 检测工程目录是否存在, 警告用户会覆盖工程
-    function checkProjectIsExist(projectname) {
-        // 如果存在js目录
-        if( fs.existsSync(projectname) ){
+    function checkProjectIsExist() {
+        // 如果存在js目录,或者src目录,提示可能会覆盖
+        if( hasJsFolder || fs.existsSync("src") ){
             warn(`Project already exist.`);
             var prompt = new confirm('Do you Want to overwrite the project directory?');
             isExistProject = true;
@@ -223,10 +246,12 @@ function initProject(names, version, templateName, platformName) {
         fetchRelease(version, function (releasePath) {
         // 工程缓存路径 /demo/cache
         let cachePath = path.join(name,"cache");
-        // 项目模板文件夹路径 /demo/templates
-        let templateDir = path.join(name, templateDirName);
-        // 项目平台文件夹路径 /demo/platforms
-        let platformDir = path.join(name, platformDirName);
+        // 项目模板文件夹路径 /demo/src/templates
+        let templateDir = path.join(rootName, templateDirName);
+        // NPM 开发目录 /demo/src/dev
+        let devDir = path.join(rootName, devDirName);
+        // 项目平台文件夹路径 /demo/src/platforms
+        let platformDir = path.join(rootName, platformDirName);
 
             log("Copying default template file...");
             // 复制文件到项目的cache目录
@@ -234,9 +259,9 @@ function initProject(names, version, templateName, platformName) {
             // 再从cache复制到根目录,防止多次创建覆盖
             // 如果没有加参数,创建默认工程不会覆盖之前的工程
             if( !isExistProject ){
-                fs.copySync(cachePath, name );
+                fs.copySync(cachePath, rootName );
             }else{
-                log("project exists, it will not overwrite the default project");
+                warn(`project exists, it will not overwrite the default project.`);
             }
 
             if (templateName || platformName ) {
@@ -262,9 +287,15 @@ function initProject(names, version, templateName, platformName) {
                 }
 
             }
-
+            if( !hasJsFolder && !fs.existsSync(path.join(rootName,"package.json")) ){
+                let devCacheDir = path.join(cachePath, devDirName);
+                // 初始化NPM模式
+                initDev(devCacheDir);
+            }
             // 最后删除模板文件夹
             fs.removeSync(templateDir);
+            // 删除开发模式文件夹
+            fs.removeSync(devDir);
             // 最后删除平台文件夹
             fs.removeSync(platformDir);
             // 删除缓存
@@ -280,7 +311,7 @@ function initProject(names, version, templateName, platformName) {
                     return
                 }
                 // 项目路径 /
-                fs.copySync(platformDirName, name);
+                fs.copySync(platformDirName, rootName);
                 log("Copy platforms done.");
             }
             // 初始化模板
@@ -292,8 +323,14 @@ function initProject(names, version, templateName, platformName) {
                     return;
                 }
                 // 项目路径 /
-                fs.copySync(templateDirName, name);
+                fs.copySync(templateDirName, rootName);
                 log("Copy template done.");
+            }
+            // 初始化开发模式到根路径
+            function initDev(devsDirName) {
+                // 项目路径 /
+                fs.copySync(devsDirName, name);
+                log("Copy Package done.");
             }
         });
     }
@@ -302,7 +339,7 @@ function initProject(names, version, templateName, platformName) {
 }
 
 /**
- * 升级项目的bui版本.
+ * 升级项目的bui版本,不覆盖index.html,index.js两个文件.
  * @param  {string} [name] project name.
  * @param  {string} [version] bui version.
  * @param  {string} [platformName] init platforms/ dir with specified template
@@ -310,20 +347,20 @@ function initProject(names, version, templateName, platformName) {
 function updateProject(names, version, platformName) {
     // 获得当前路径
     let name = names || path.resolve('./');
+    // 通过判断当前目录下是否有
+    let hasJsFolder = fs.existsSync(path.join(name,"js")) || fs.existsSync(path.join(name,"pages"));
+    // 如果是开发模式,源码全在src目录,并且有 package.json 
+    let rootName = hasJsFolder ? name : name+'/src' ;
 
     // 如果用户有传项目名称,没有则在当前目录创建,检测是否存在js目录,用于检测
-    if ( names ) {
-        checkProjectIsExist(names);
-    }else {
-        checkProjectIsExist("js");
-    }
+    checkProjectIsExist();
 
     // 检测工程目录是否存在, 警告用户会覆盖工程
-    function checkProjectIsExist(projectname) {
+    function checkProjectIsExist() {
         // 如果存在js目录
-        if( fs.existsSync(projectname) ){
+        if( hasJsFolder || fs.existsSync("src") ){
             warn(`Project already exist.`);
-            var prompt = new confirm('Do you Want to overwrite the file bui.js & bui.css ?');
+            var prompt = new confirm('Do you Want to overwrite the file bui.js & bui.css ,if has -p arguments, it will overwrite index.html & index.js  ?');
             prompt.ask(function (answer) {
                 if( !answer ){
                     // error(`File already exist.`);
@@ -349,13 +386,13 @@ function updateProject(names, version, platformName) {
         let buiJsCachePath = path.join(cachePath,"js");
         let buiJsFileCachePath = path.join(buiJsCachePath,"bui.js");
         // 项目目录
-        let buiCssPath = path.join(name,"css");
+        let buiCssPath = path.join(rootName,"css");
         let buiCssFilePath = path.join(buiCssPath,"bui.css");
-        let buiJsPath = path.join(name,"js");
+        let buiJsPath = path.join(rootName,"js");
         let buiJsFilePath = path.join(buiJsPath,"bui.js");
 
         // 项目平台文件夹路径 /demo/platforms
-        let platformDir = path.join(name, platformDirName);
+        let platformDir = path.join(rootName, platformDirName);
 
             log("copy cache file...");
             try{
@@ -408,13 +445,15 @@ function updateProject(names, version, platformName) {
             // 初始化平台
             function initPlatform(platformDirName) {
                 log("Update platform...");
+
                 // 平台路径 /cache/platforms/link
                 if (!fs.existsSync(platformDirName)) {
                     warn(`Platform not exist. Using default platform webapp.`);
                     return
                 }
+
                 // 项目路径 /
-                fs.copySync(platformDirName, name, { filter: filterFunc });
+                fs.copySync(platformDirName, rootName, { filter: filterFunc });
                 log("Update platforms done.");
             }
         });
@@ -548,7 +587,9 @@ var args = yargs
     .help()
     .alias({
         "h": "help",
-        "v": "version"
+        "v": "version",
+        "p": "platform",
+        "t": "template"
     })
     .strict(true)
     .demandCommand()
