@@ -9,7 +9,7 @@
 ## 一、简介
 [buijs](https://github.com/imouou/buijs-cli) 是[BUI Webapp交互框架](http://www.easybui.com) 的npm命令工具(专注webapp快速开发), 用于快速生成指定平台与模板必须的工程文件. 需要先安装 [node环境](https://nodejs.org/zh-cn/) 才能使用npm命令. 
 
-**不使用命令行工具,你也依然可以使用bui,只需引入对应的脚本及样式库就行.**
+**不使用命令行工具,你也依然可以使用bui,只需下载引入对应的脚本及样式库就行.**
 ```
 <link href="https://raw.githubusercontent.com/imouou/BUI-Template/master/css/bui.css" rel="stylesheet">
 
@@ -23,7 +23,7 @@
 2. 可以指定bui对应的平台版本;
 3. 可以指定bui的单页模板.  [BUI模板图片预览](https://github.com/imouou/BUI-Template/) ;
 4. 拥有服务器并支持接口跨域调试;
-5. 自动编译压缩混淆文件,便于打包发布;
+5. 自动编译压缩混淆文件,便于打包部署的安全;
 
 
 ## 二、安装buijs命令行工具
@@ -56,21 +56,22 @@ $ cd demo
 # 安装依赖
 $ npm install 
 
-# 编译工程,生成dist目录
+# 第1次需要先编译工程,生成dist目录,下面的命令才能运行
 $ npm run build
 
 # 运行并监听js,scss,html等文件的修改,自动编译到dist目录
 $ npm run dev
 
 ```
-**注意:** `npm run dev`使用这个命令样式的修改都需要在 /scss/style.scss 文件,可以分模块引入,如果直接修改style.css很可能不小心就会被覆盖掉.
-如果不想使用sass, 请最后一个 命令换成 `npm run server`, 只是启动服务,不做编译,不做监听.
+**注意:** `npm run dev`使用这个命令样式的修改都需要在 /scss/style.scss 文件,可以分模块引入,如果直接修改css/style.css 会被覆盖掉.
+
+如果不想使用自动编译, 请最后一个 命令换成 `npm run server`, 只是启动服务,不做编译,不做监听.
 
 ### 3.2 打开浏览器输入地址预览 
 
 `http://localhost:8000` 
 
-默认端口号:8000, 如需更改同样是在package.json 配置.
+默认端口号:8000, 一个端口对应一个工程, 如需更改同样是在package.json 配置.
 
 ### 3.3 接口如何跨域?
 打开根目录下的 package.json ,里面有个 proxy 的对象, key值为接口的目录名, target 为域名的host. 
@@ -104,6 +105,22 @@ bui.ajax({
 })
 ```
 
+### 3.3 devServer 服务器的配置说明
+
+打开根目录下的 package.json ,里面有个 devServer 的对象.
+```
+{
+...
+"devServer": {
+    "port" : 8000,          // 端口号
+    "root": "dist",         // 网站的根目录,需要编译才有
+    "source": "src",        // app的源文件目录
+    "build": "dist",        // 编译以后的目录,保持跟root一致
+    "livereload" : false    // 是否保存立即刷新浏览器, 这个开启以后,单页调试会不能后退
+  }
+...
+}
+```
 
 ### 工程模板预览
 
