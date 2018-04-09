@@ -275,6 +275,12 @@ function initProject(names, version, templateName, platformName) {
                 if( templateName ){
                     // /demo/cache/templates/main-tab
                     let templateNameCache = path.join(templateCacheDir, templateName );
+                    if( !fs.existsSync(templateNameCache) ){
+                         // 删除缓存
+                        fs.removeSync(cachePath);
+                        error("template "+templateName+" is not exist");
+                        // return;
+                    }
                     log("Copying template file.");
                     initTemplate(templateNameCache);
                 }
@@ -282,6 +288,12 @@ function initProject(names, version, templateName, platformName) {
                 if( platformName ){
                     // /demo/cache/platforms/link
                     let platformNameCache = path.join(platformCacheDir, platformName );
+                    if( !fs.existsSync(platformNameCache) ){
+                        
+                        fs.removeSync(cachePath);
+                        error("platform "+platformName+" is not exist");
+                        // return;
+                    }
                     log("Copying platform file.");
                     initPlatform(platformNameCache);
                 }

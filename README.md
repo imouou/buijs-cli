@@ -47,34 +47,36 @@ $ sudo npm install -g buijs
 
 ```bash
 
-# 创建webapp工程 (demo 为工程名称, 如果没有,则在当前目录)
+# * 创建webapp工程 (demo 为工程名称, 如果没有,则在当前目录)
 $ buijs create demo 
 
-# 进入工程目录
+# * 进入工程目录
 $ cd demo
 
-# 安装依赖
+# * 安装依赖
 $ npm install 
 
-# 第1次需要先编译工程,生成dist目录,下面的命令才能运行
-$ npm run build
-
-# 运行并监听js,scss,html等文件的修改,自动编译到dist目录
+# * 自动打开浏览器并监听js,scss,html等文件的修改
 $ npm run dev
+
+
+# 非必须命令,编译工程,生成dist目录,压缩脚本,样式,图片,用于发布打包的安全
+$ npm run build
 
 ```
 **注意:** `npm run dev`使用这个命令样式的修改都需要在 /scss/style.scss 文件,可以分模块引入,如果直接修改css/style.css 会被覆盖掉.
 
-如果不想使用自动编译, 请最后一个 命令换成 `npm run server`, 只是启动服务,不做编译,不做监听.
 
-### 3.2 打开浏览器输入地址预览 
+如果不想使用自动编译, 请把`npm run dev` 命令换成 `npm run server`, 只是启动服务,不做编译,不做监听.
+
+### 3.2 自动打开默认浏览器  
 
 `http://localhost:8000` 
 
-默认端口号:8000, 一个端口对应一个工程, 如需更改同样是在package.json 配置.
+端口自动生成, 一个端口对应一个工程, 如需更改同样是在app.json 配置.
 
 ### 3.3 接口如何跨域?
-打开根目录下的 package.json ,里面有个 proxy 的对象, key值为接口的目录名, target 为域名的host. 
+打开根目录下的 app.json ,里面有个 proxy 的对象, key值为接口的目录名, target 为域名的host. 
 
 假设请求的接口地址为: http://www.easybui.com/api/getDetail/id/123 
 
@@ -107,19 +109,17 @@ bui.ajax({
 
 ### 3.3 devServer 服务器的配置说明
 
-打开根目录下的 package.json ,里面有个 devServer 的对象.
+打开根目录下的 app.json ,里面有个 devServer 的对象.
 ```
 {
-...
-"devServer": {
-    "port" : 8000,          // 端口号
-    "root": "dist",         // 网站的根目录,需要编译才有
-    "source": "src",        // app的源文件目录
-    "build": "dist",        // 编译以后的目录,保持跟root一致
-    "livereload" : false    // 是否保存立即刷新浏览器, 这个开启以后,单页调试会不能后退
+  "devServer": {
+    "root": "src",                    // 源文件目录
+    "livereload": true,               // 修改自动刷新
+    "watchfile": "html,js,scss,css",  // 监听后缀为.html,.js,.scss,.css的文件修改
+    "port": 2149                      // 端口号
   }
-...
 }
+
 ```
 
 ### 工程模板预览
@@ -152,8 +152,8 @@ bui.ajax({
 | **命令行**   | **描述**           |
 |:------------- |:-------------------|
 | `npm run build` | 编译成可以打包的文件,默认服务器根路径是"dist",所以需要先编译    |
-| `npm run dev` | 启动默认8000端口的服务,并且默认支持了接口跨域, 并且会自动监听脚本,scss文件,html文件的修改编译    |
-| `npm run server` | 启动默认8000端口的服务,并且默认支持了接口跨域,需要在package.json配置对应的接口地址    |
+| `npm run dev` | 启动服务并打开默认浏览器,支持接口跨域, 并且会自动监听脚本,scss文件,html文件的修改编译    |
+| `npm run server` | 启动默认8000端口的服务,并且默认支持了接口跨域,需要在app.json配置对应的接口地址    |
 | `npm run watch` | 自动监听脚本,scss文件,html文件的修改编译    |
 
 
@@ -239,7 +239,8 @@ buijs update -p bingotouch
 | **路径**   | **描述**           |
 |:------------- |:-------------------|
 | gulpfile.js     |入口文件    |
-| package.json    |入口文件    |
+| package.json    |npm依赖配置文件    |
+| app.json    |入口文件    |
 | dist/     | 编译打包的目录    |
 | src/index.html     |入口文件    |
 | src/index.js       |入口的脚本    |
