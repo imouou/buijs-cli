@@ -5,6 +5,7 @@
 |:-------------------|-------------------:|
 |新增update命令,修复update平台时,会覆盖index.html,index.js问题    |2018-2-1    |
 |新增NPM开发模式,修改了目录规范,修复无网络无法创建问题    |2018-3-25    |
+|新增buijs update -d 更新npm命令    |2018-4-12    |
 
 ## 一、简介
 [buijs](https://github.com/imouou/buijs-cli) 是[BUI Webapp交互框架](http://www.easybui.com) 的npm命令工具(专注webapp快速开发), 用于快速生成指定平台与模板必须的工程文件. 需要先安装 [node环境](https://nodejs.org/zh-cn/) 才能使用npm命令. 
@@ -142,7 +143,7 @@ bui.ajax({
 | `buijs create `  |在当前目录创建bui webapp默认工程    |
 | `buijs create [projectName] [version] [-t templateName] [-p platformName]`       |创建工程,支持指定版本,指定模板,指定平台,相同目录下会覆盖    |
 | `buijs update` | 在当前项目更新 bui为最新webapp版本,只修改bui.css,bui.js不覆盖项目其它内容    |
-| `buijs update [projectName] [version] [-p platformName]` | 更新bui为某个版本,某个平台    |
+| `buijs update [projectName] [version] [-p platformName] [-d]` | 更新bui为某个版本,某个平台, -d 为最新的npm命令模式(dev)    |
 | `buijs list`       |显示可用的版本    |
 | `buijs list-template`       |显示可用的模板列表 [BUI模板图片预览](https://github.com/imouou/BUI-Template/)    |
 | `buijs list-platform`       |显示可用的平台列表    |
@@ -229,6 +230,13 @@ buijs update
 
 ```bash
 buijs update -p bingotouch
+```
+
+
+### 更新工程为最新npm开发模式
+
+```bash
+buijs update -d
 ```
 
 

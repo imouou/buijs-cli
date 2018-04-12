@@ -264,7 +264,7 @@ function initProject(names, version, templateName, platformName) {
                 warn(`project exists, it will not overwrite the default project.`);
             }
 
-            if (templateName || platformName ) {
+            if ( templateName || platformName ) {
 
                 // 缓存模板文件夹路径 /demo/cache/templates/
                 let templateCacheDir = path.join(cachePath, templateDirName);
@@ -356,7 +356,7 @@ function initProject(names, version, templateName, platformName) {
  * @param  {string} [version] bui version.
  * @param  {string} [platformName] init platforms/ dir with specified template
  */
-function updateProject(names, version, platformName) {
+function updateProject(names, version, platformName, devName) {
     // 获得当前路径
     let name = names || path.resolve('./');
     // 通过判断当前目录下是否有
@@ -372,7 +372,7 @@ function updateProject(names, version, platformName) {
         // 如果存在js目录
         if( hasJsFolder || fs.existsSync("src") ){
             warn(`Project already exist.`);
-            var prompt = new confirm('Do you Want to overwrite the file bui.js & bui.css ,if has -p arguments, it will overwrite index.html & index.js  ?');
+            var prompt = new confirm('Do you Want to overwrite the project  ?');
             prompt.ask(function (answer) {
                 if( !answer ){
                     // error(`File already exist.`);
@@ -393,6 +393,10 @@ function updateProject(names, version, platformName) {
         fetchRelease(version, function (releasePath) {
         // 工程缓存路径 /demo/cache
         let cachePath = path.join(name,"cache");
+        // 开发包
+        let devCachePath = path.join(cachePath,"dev");
+        let packageFile = path.join(name, "package.json");
+        // 平台
         let buiCssCachePath = path.join(cachePath,"css");
         let buiCssFileCachePath = path.join(buiCssCachePath,"bui.css");
         let buiJsCachePath = path.join(cachePath,"js");
@@ -422,16 +426,12 @@ function updateProject(names, version, platformName) {
                 let platformCacheDir = path.join(cachePath, platformDirName);
                 
                 // 复制平台需要的文件
-                if( platformName ){
-                    // /demo/cache/platforms/link
-                    let platformNameCache = path.join(platformCacheDir, platformName );
-                    log("Update platform file.");
-                    initPlatform(platformNameCache);
-                }
-
+                // /demo/cache/platforms/link
+                let platformNameCache = path.join(platformCacheDir, platformName );
+                initPlatform(platformNameCache);
             }else{
                 try{
-                    // 再从cache复制bui.js文件到根目录
+                    // 再从cache复制bui.js webapp版文件到根目录
                     fs.copySync(buiJsFileCachePath, buiJsFilePath);
                 }catch(e){
                     warn(`copy bui.js file error`);
@@ -439,9 +439,19 @@ function updateProject(names, version, platformName) {
                 
             }
 
+            // 更新npm 的包
+            if ( devName ) {
+
+                // 模板平台文件夹路径 /demo/cache/dev/
+                let devCacheDir = path.join(cachePath, devDirName);
+                // 初始化NPM模式
+                initDev(devCacheDir);
+
+            }
+
             // 删除缓存
             fs.removeSync(cachePath);
-            log("Project update done.");
+
 
             // 过滤掉 index.html, index.js 文件
             function filterFunc(src, dest) {
@@ -456,17 +466,23 @@ function updateProject(names, version, platformName) {
             }
             // 初始化平台
             function initPlatform(platformDirName) {
-                log("Update platform...");
 
                 // 平台路径 /cache/platforms/link
                 if (!fs.existsSync(platformDirName)) {
-                    warn(`Platform not exist. Using default platform webapp.`);
+                    warn(`Platform not exist.`);
                     return
                 }
-
+                log("Update platform...");
                 // 项目路径 /
                 fs.copySync(platformDirName, rootName, { filter: filterFunc });
-                log("Update platforms done.");
+                log("Platform update done.");
+            }
+            // 初始化dev
+            function initDev(devsDirName) {
+                log("Overwrite npm command...");
+                // // 平台路径 /cache/dev
+                fs.copySync(devsDirName, name);
+                log("npm command update done.");
             }
         });
     }
@@ -548,10 +564,13 @@ var args = yargs
             yargs.option('platform', {
                 alias: 'p',
                 describe: 'Update with specified platform.'
+            }).option('dev', {
+                alias: 'd',
+                describe: 'Update npm command.'
             })
         },
         handler: function(argv) {
-            updateProject(argv.name, argv.version, argv.platform);
+            updateProject(argv.name, argv.version, argv.platform, argv.dev);
         }
     })
     .command({
