@@ -12,11 +12,12 @@
 
 **不使用命令行工具,你也依然可以使用bui,只需下载引入对应的脚本及样式库就行.**
 ```
-<link href="https://raw.githubusercontent.com/imouou/BUI-Template/master/css/bui.css" rel="stylesheet">
+<link href="http://www.easybui.com/demo/css/bui.css" rel="stylesheet">
 
-<script src="https://raw.githubusercontent.com/imouou/BUI-Template/master/js/zepto.js"></script>
-<script src="https://raw.githubusercontent.com/imouou/BUI-Template/master/js/bui.js"></script>
+<script src="http://www.easybui.com/demo/js/zepto.js"></script>
+<script src="http://www.easybui.com/demo/js/bui.js"></script>
 ```
+<a href="http://jsbin.com/jukuvec/edit?html,js,output" target="_blank">BUI最简单使用方式示例</a>
 
 但通过命令行构建,有以下好处:
 
