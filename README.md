@@ -12,12 +12,29 @@
 
 **不使用命令行工具,你也依然可以使用bui,只需下载引入对应的脚本及样式库就行.**
 ```
-<link href="http://www.easybui.com/demo/css/bui.css" rel="stylesheet">
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>BUI开发工程页面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link href="http://www.easybui.com/demo/css/bui.css" rel="stylesheet">
+</head>
+<body>
+    <div class="bui-page">
+        <header></header>
+        <main>
+            <!-- 正文内容 -->
+        </main>
+        <footer></footer>
+    </div>
 
-<script src="http://www.easybui.com/demo/js/zepto.js"></script>
-<script src="http://www.easybui.com/demo/js/bui.js"></script>
+    <script src="http://www.easybui.com/demo/js/zepto.js"></script>
+    <script src="http://www.easybui.com/demo/js/bui.js"></script>
+</body>
+</html>
 ```
-<a href="http://jsbin.com/jukuvec/edit?html,js,output" target="_blank">BUI最简单使用方式示例</a>
+
+<a href="http://jsbin.com/jukuvec/edit?html,js,output" target="_blank">在线体验BUI,自己动手DIY</a>
 
 但通过命令行构建,有以下好处:
 
