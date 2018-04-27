@@ -5,7 +5,7 @@
 |:-------------------|-------------------:|
 |新增update命令,修复update平台时,会覆盖index.html,index.js问题    |2018-2-1    |
 |新增NPM开发模式,修改了目录规范,修复无网络无法创建问题    |2018-3-25    |
-|新增buijs update -d 更新npm命令    |2018-4-12    |
+|新增buijs update -d 更新工程NPM命令模式    |2018-4-12    |
 
 ## 一、简介
 [buijs](https://github.com/imouou/buijs-cli) 是[BUI Webapp交互框架](http://www.easybui.com) 的npm命令工具(专注webapp快速开发), 用于快速生成指定平台与模板必须的工程文件. 需要先安装 [node环境](https://nodejs.org/zh-cn/) 才能使用npm命令. 
@@ -17,7 +17,7 @@
 <head>
     <title>BUI开发工程页面</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <link href="http://www.easybui.com/demo/css/bui.css" rel="stylesheet">
+    <link href="//unpkg.com/buijs/lib/latest/bui.css" rel="stylesheet">
 </head>
 <body>
     <div class="bui-page">
@@ -28,8 +28,13 @@
         <footer></footer>
     </div>
 
-    <script src="http://www.easybui.com/demo/js/zepto.js"></script>
-    <script src="http://www.easybui.com/demo/js/bui.js"></script>
+    <script src="//unpkg.com/buijs/lib/zepto.js"></script>
+    <script src="//unpkg.com/buijs/lib/latest/bui.js"></script>
+    <script>
+      bui.ready(function(){
+          // 控件初始化
+      })
+    </script>
 </body>
 </html>
 ```
@@ -86,9 +91,7 @@ $ npm run build
 **注意:** `npm run dev`使用这个命令样式的修改都需要在 /scss/style.scss 文件,可以分模块引入,如果直接修改css/style.css 会被覆盖掉.
 
 
-如果不想使用自动编译, 请把`npm run dev` 命令换成 `npm run server`, 只是启动服务,不做编译,不做监听.
-
-### 3.2 自动打开默认浏览器  
+### 3.2 自动打开默认浏览器, 对应 dist 目录, 修改需要修改 src 目录的相同文件  
 
 `http://localhost:8000` 
 
@@ -126,16 +129,20 @@ bui.ajax({
 })
 ```
 
-### 3.3 devServer 服务器的配置说明
+### 3.3 服务器的配置说明
 
 打开根目录下的 app.json ,里面有个 devServer 的对象.
 ```
 {
+  "distServer": {
+    "root": "dist",                   // 编译的目录
+    "livereload": true,               // 修改自动刷新
+    "port": 2149                      // 端口号,默认第一次随机自动生成
+  },
   "devServer": {
     "root": "src",                    // 源文件目录
-    "livereload": true,               // 修改自动刷新
-    "watchfile": "html,js,scss,css",  // 监听后缀为.html,.js,.scss,.css的文件修改
-    "port": 2149                      // 端口号
+    "livereload": false,              // 修改自动刷新
+    "port": 2147                      // 端口号,默认第一次随机自动生成
   }
 }
 
@@ -161,7 +168,7 @@ bui.ajax({
 | `buijs create `  |在当前目录创建bui webapp默认工程    |
 | `buijs create [projectName] [version] [-t templateName] [-p platformName]`       |创建工程,支持指定版本,指定模板,指定平台,相同目录下会覆盖    |
 | `buijs update` | 在当前项目更新 bui为最新webapp版本,只修改bui.css,bui.js不覆盖项目其它内容    |
-| `buijs update [projectName] [version] [-p platformName] [-d]` | 更新bui为某个版本,某个平台, -d 为最新的npm命令模式(dev)    |
+| `buijs update [projectName] [version] [-p platformName] [-d]` | 更新bui为某个版本,某个平台, -d 更新为最新的工程模式(dev)    |
 | `buijs list`       |显示可用的版本    |
 | `buijs list-template`       |显示可用的模板列表 [BUI模板图片预览](https://github.com/imouou/BUI-Template/)    |
 | `buijs list-platform`       |显示可用的平台列表    |
@@ -173,7 +180,6 @@ bui.ajax({
 | `npm run build` | 编译成可以打包的文件,默认服务器根路径是"dist",所以需要先编译    |
 | `npm run dev` | 启动服务并打开默认浏览器,支持接口跨域, 并且会自动监听脚本,scss文件,html文件的修改编译    |
 | `npm run server` | 启动默认8000端口的服务,并且默认支持了接口跨域,需要在app.json配置对应的接口地址    |
-| `npm run watch` | 自动监听脚本,scss文件,html文件的修改编译    |
 
 
 ## 五、命令示例
@@ -274,7 +280,7 @@ buijs update -d
 | src/css/style.css  | 当前应用的样式文件    |
 | src/font/         |字体图标目录    |
 | src/images/       |应用图片目录    |
-| src/scss/       | 样式源文件    |
+| src/scss/       | 样式源文件,样式最好放这里可以分模块管理    |
 | src/js/zepto.js  | bui的依赖库  |
 | src/js/plugins/fastclick.js  |  移动端快速点击的插件   |
 | src/js/bui.js       |  BUI交互控件库   |
