@@ -8,56 +8,31 @@
 |新增buijs update -d 更新工程NPM命令模式    |2018-4-12    |
 
 ## 一、简介
-[buijs](https://github.com/imouou/buijs-cli) 是[BUI Webapp交互框架](http://www.easybui.com) 的npm命令工具(专注webapp快速开发), 用于快速生成指定平台与模板必须的工程文件. 需要先安装 [node环境](https://nodejs.org/zh-cn/) 才能使用npm命令. 
 
-**不使用命令行工具,你也依然可以使用bui,只需下载引入对应的脚本及样式库就行.**
-```
-<!DOCTYPE HTML>
-<html>
-<head>
-    <title>BUI开发工程页面</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <link href="//unpkg.com/buijs/lib/latest/bui.css" rel="stylesheet">
-</head>
-<body>
-    <div class="bui-page">
-        <header></header>
-        <main>
-            <!-- 正文内容 -->
-        </main>
-        <footer></footer>
-    </div>
+> [buijs](https://github.com/imouou/buijs-cli) 是[BUI Webapp交互框架](http://www.easybui.com) 的cli命令工具, 用于快速生成指定平台与模板最新的工程文件.
 
-    <script src="//unpkg.com/buijs/lib/zepto.js"></script>
-    <script src="//unpkg.com/buijs/lib/latest/bui.js"></script>
-    <script>
-      bui.ready(function(){
-          // 控件初始化
-      })
-    </script>
-</body>
-</html>
-```
-
-<a href="http://jsbin.com/jukuvec/edit?html,js,output" target="_blank">在线体验BUI,自己动手DIY</a>
-
-但通过命令行构建,有以下好处:
+*通过命令行构建,有以下好处:*
 
 1. 自动获取最新的BUI模板工程;
 2. 可以指定bui对应的平台版本;
 3. 可以指定bui的单页模板.  [BUI模板图片预览](https://github.com/imouou/BUI-Template/) ;
 4. 拥有服务器并支持接口跨域调试;
 5. 自动编译压缩混淆文件,便于打包部署的安全;
+6. 支持ES6编译;
+7. 支持sass编译;
+8. 减少对工具的依赖
 
 
 ## 二、安装buijs命令行工具
 
-windows: 
+> 需要先安装 [node环境](https://nodejs.org/zh-cn/) 才能使用npm命令. 
+
+*windows: *
 ```bash
 $ npm install -g buijs
 ```
 
-mac: 
+*mac: 需要权限,执行sudo以后,还要输入密码回车确认*
 ```bash
 $ sudo npm install -g buijs
 ```
@@ -84,27 +59,29 @@ $ npm install
 $ npm run dev
 
 
-# 非必须命令,编译工程,生成dist目录,压缩脚本,样式,图片,用于发布打包的安全
+# 非必须命令,编译工程,生成dist目录,压缩脚本,样式,图片,用于发布打包的安全, 会清空之前目录,重新根据`src`目录生成.
+
 $ npm run build
 
 ```
-**注意:** `npm run dev`使用这个命令样式的修改都需要在 /scss/style.scss 文件,可以分模块引入,如果直接修改css/style.css 会被覆盖掉.
+**注意:** `npm run dev`使用这个命令样式的修改都需要在 `src/scss/style.scss` 文件,可以分模块引入,如果直接修改`src/css/style.css`,需要删除`src/scss`目录,避免style.css被覆盖.
 
 
-### 3.2 自动打开默认浏览器, 对应 dist 目录, 修改需要修改 src 目录的相同文件  
+### 3.2 自动打开默认浏览器,  修改src 目录的相同文件,就会生成对应的dist文件,用于预览.  
 
-`http://localhost:8000` 
+`http://localhost:port` 
 
-端口自动生成, 一个端口对应一个工程, 如需更改同样是在app.json 配置.
+`port`端口自动生成, 一个端口对应一个工程, 如需更改同样是在`app.json` 配置.
 
 ### 3.3 接口如何跨域?
-打开根目录下的 app.json ,里面有个 proxy 的对象, key值为接口的目录名, target 为域名的host. 
+
+打开根目录下的 `app.json` ,里面有个 `proxy` 的对象, key值为接口的目录名, `target` 为域名的host. 
 
 假设请求的接口地址为: http://www.easybui.com/api/getDetail/id/123 
 
 需要这样配置 proxy :
 
-```
+```js
 {
 ...
 "proxy": {
@@ -119,7 +96,7 @@ $ npm run build
 
 js: 脚本请求使用相对路径, 为了后面更改为正式地址, 建议可以把url部分作为配置项.
 
-```
+```js
 var apiUrl = "";
 
 bui.ajax({
@@ -131,18 +108,13 @@ bui.ajax({
 
 ### 3.3 服务器的配置说明
 
-打开根目录下的 app.json ,里面有个 devServer 的对象.
-```
+打开根目录下的 `app.json ,里面有个 devServer 的对象.
+```js
 {
   "distServer": {
     "root": "dist",                   // 编译的目录
     "livereload": true,               // 修改自动刷新
     "port": 2149                      // 端口号,默认第一次随机自动生成
-  },
-  "devServer": {
-    "root": "src",                    // 源文件目录
-    "livereload": false,              // 修改自动刷新
-    "port": 2147                      // 端口号,默认第一次随机自动生成
   }
 }
 
@@ -289,3 +261,36 @@ buijs update -d
 | src/pages/main/main.html      | 默认 main 模块模板    |
 | src/pages/main/main.js      | 默认 main 模块定义脚本    |
 
+## 七、手动引入
+
+**不使用`buijs` cli命令行工具,你也依然可以使用bui,只需下载引入对应的脚本及样式库就行.**
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>BUI开发工程页面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link href="//unpkg.com/buijs/lib/latest/bui.css" rel="stylesheet">
+</head>
+<body>
+    <div class="bui-page">
+        <header></header>
+        <main>
+            <!-- 正文内容 -->
+        </main>
+        <footer></footer>
+    </div>
+
+    <script src="//unpkg.com/buijs/lib/zepto.js"></script>
+    <script src="//unpkg.com/buijs/lib/latest/bui.js"></script>
+    <script>
+      bui.ready(function(){
+          // 控件初始化
+      })
+    </script>
+</body>
+</html>
+```
+
+<a href="http://jsbin.com/jukuvec/edit?html,js,output" target="_blank">在线体验BUI,自己动手DIY</a>
