@@ -73,7 +73,17 @@ $ npm run build
 
 `port`端口自动生成, 一个端口对应一个工程, 如需更改同样是在`app.json` 配置.
 
-### 3.3 接口如何跨域?
+
+### 工程模板预览
+
+**默认模板预览**  更多模板点击这里 [BUI模板图片预览](https://github.com/imouou/BUI-Template/)
+
+<img src="https://raw.githubusercontent.com/imouou/BUI-Template/master/preview.png" alt="">
+
+
+## 四、接口跨域及配置
+
+### 接口跨域
 
 打开根目录下的 `app.json` ,里面有个 `proxy` 的对象, key值为接口的目录名, `target` 为域名的host. 
 
@@ -106,7 +116,7 @@ bui.ajax({
 })
 ```
 
-### 3.3 服务器的配置说明
+### 服务器的配置说明
 
 打开根目录下的 `app.json ,里面有个 devServer 的对象.
 ```js
@@ -120,14 +130,7 @@ bui.ajax({
 
 ```
 
-### 工程模板预览
-
-**默认模板预览**  更多模板点击这里 [BUI模板图片预览](https://github.com/imouou/BUI-Template/)
-
-<img src="https://raw.githubusercontent.com/imouou/BUI-Template/master/preview.png" alt="">
-
-
-## 四、命令列表
+## 五、命令列表
 
 注意: 中括号为可选,如果没有采用默认
 
@@ -154,7 +157,7 @@ bui.ajax({
 | `npm run server` | 启动默认8000端口的服务,并且默认支持了接口跨域,需要在app.json配置对应的接口地址    |
 
 
-## 五、命令示例
+## 六、命令示例
 ### 创建某个模板工程 ( main-tab 为模板名称)
 可以先查看有什么模板 `buijs list-template`, [BUI模板图片预览](https://github.com/imouou/BUI-Template/)
 
@@ -236,7 +239,7 @@ buijs update -d
 ```
 
 
-## 六、目录说明: 
+## 七、目录说明: 
 
 **单页应用包文件夹说明:**
 
@@ -261,7 +264,7 @@ buijs update -d
 | src/pages/main/main.html      | 默认 main 模块模板    |
 | src/pages/main/main.js      | 默认 main 模块定义脚本    |
 
-## 七、手动引入
+## 八、手动引入
 
 **不使用`buijs` cli命令行工具,你也依然可以使用bui,只需下载引入对应的脚本及样式库就行.**
 
