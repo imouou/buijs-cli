@@ -74,7 +74,7 @@ $ npm run build
 `port`端口自动生成, 一个端口对应一个工程, 如需更改同样是在`app.json` 配置.
 
 
-### 工程模板预览
+### 3.3 工程模板预览
 
 **默认模板预览**  更多模板点击这里 [BUI模板图片预览](https://github.com/imouou/BUI-Template/)
 
