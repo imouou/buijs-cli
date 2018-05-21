@@ -190,7 +190,7 @@ $ buijs create -t page-login
 
 可以先查看有什么平台选择 `buijs list-platform`
 > <strong style="color:red">注意:</strong>
-1. 目前已经支持以下打包平台 cordova,bingotouch,link,dcloud,apicloud,appcan,微信 等; 
+1. 目前已经支持以下打包平台 cordova,bingotouch,dcloud,apicloud,appcan,微信 等; 
 2. 不同平台对应的文件会有些许不同, 绑定原生后退的方法也不同, 不指定平台时, 默认是webapp平台, 可以在微信及webkit浏览器内核预览.
 
 以下内容都是以进入 demo 工程示例.
