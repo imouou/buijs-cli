@@ -207,42 +207,57 @@ function fetchRelease(version, cb) {
 function initProject(names, version, templateName, platformName) {
     // 获得当前路径
     let name = names || path.resolve('./');
+    let jsDir = path.join(name,"js");
+    let pagesDir = path.join(name,"pages");
     // 通过判断当前目录下是否有
-    let hasJsFolder = fs.existsSync(path.join(name,"js")) || fs.existsSync(path.join(name,"pages"));
+    let hasJsFolder = fs.existsSync(jsDir) || fs.existsSync(pagesDir);
     // 如果是开发模式,源码全在src目录,并且有 package.json 
     let rootName = hasJsFolder ? name : name+'/src' ;
 
+    // 检测是否存在当前模板
+    let tplName = templateName && templateName.indexOf("-") ? (templateName.split("-")[1] || "") : "";
+    let tplNameDir = path.join(rootName,"pages",tplName);
+    let hasTplName = fs.existsSync(tplNameDir);
     // 项目是否已经存在的检测
     let isExistProject = false;
+    // 先检测有没有相同模板
+    if( hasTplName ){
+        var prompt = new confirm('The Template already exists in the project. Press "Enter" to overwrite.');
+        prompt.ask(function (answer) {
+            if( !answer ){
+                // error(`File already exist.`);
+                return;
+            }else{
+                // 如果用户有传项目名称,没有则在当前目录创建,检测是否存在js目录,用于检测
+                checkProjectIsExist();
 
-    // 如果用户有传项目名称,没有则在当前目录创建,检测是否存在js目录,用于检测
-    checkProjectIsExist();
+                return;
+            }
+        });
+    }else{
+        // 如果用户有传项目名称,没有则在当前目录创建,检测是否存在js目录,用于检测
+        checkProjectIsExist();
+    }
     
     // 检测工程目录是否存在, 警告用户会覆盖工程
     function checkProjectIsExist() {
         // 如果存在js目录,或者src目录,提示可能会覆盖
-        if( hasJsFolder || fs.existsSync("src") ){
-            warn(`Project already exist.`);
-            var prompt = new confirm('Do you Want to overwrite the project directory?');
+        // 如果创建子目录,并且子目录不存在,则认为项目不存在,不弹出提醒.
+        if( hasJsFolder || fs.existsSync("src") || (names && fs.existsSync(names))  ){
+            
             isExistProject = true;
-            prompt.ask(function (answer) {
-                if( !answer ){
-                    // error(`File already exist.`);
-                    return;
-                }else{
-                    log("Overwrite project...");
-                    createProject();
-                }
-            });
+            
+            createProject();
+            
             return;
         }
-        log("Creating project...");
         isExistProject = false;
         createProject();
     }
 
     // 创建工程
     function createProject() {
+        log("Creating project...");
         fetchRelease(version, function (releasePath) {
         // 工程缓存路径 /demo/cache
         let cachePath = path.join(name,"cache");
@@ -260,10 +275,8 @@ function initProject(names, version, templateName, platformName) {
             // 如果没有加参数,创建默认工程不会覆盖之前的工程
             if( !isExistProject ){
                 fs.copySync(cachePath, rootName );
-            }else{
-                warn(`project exists, it will not overwrite the default project.`);
             }
-
+            // 复制模板或者平台
             if ( templateName || platformName ) {
 
                 // 缓存模板文件夹路径 /demo/cache/templates/
@@ -273,6 +286,7 @@ function initProject(names, version, templateName, platformName) {
                 
                 // 删除根路径并复制模板
                 if( templateName ){
+                    
                     // /demo/cache/templates/main-tab
                     let templateNameCache = path.join(templateCacheDir, templateName );
                     if( !fs.existsSync(templateNameCache) ){
@@ -283,6 +297,7 @@ function initProject(names, version, templateName, platformName) {
                     }
                     log("Copying template file.");
                     initTemplate(templateNameCache);
+                    
                 }
                 // 复制平台需要的文件
                 if( platformName ){
@@ -299,7 +314,7 @@ function initProject(names, version, templateName, platformName) {
                 }
 
             }
-            if( !hasJsFolder && !fs.existsSync(path.join(rootName,"package.json")) ){
+            if( !hasJsFolder && !fs.existsSync(path.join(name,"package.json")) ){
                 let devCacheDir = path.join(cachePath, devDirName);
                 // 初始化NPM模式
                 initDev(devCacheDir);
@@ -355,6 +370,7 @@ function initProject(names, version, templateName, platformName) {
  * @param  {string} [name] project name.
  * @param  {string} [version] bui version.
  * @param  {string} [platformName] init platforms/ dir with specified template
+ * @param  {string} [dev] 更新gulpfile.js package.js app.json
  */
 function updateProject(names, version, platformName, devName) {
     // 获得当前路径
@@ -393,6 +409,7 @@ function updateProject(names, version, platformName, devName) {
         fetchRelease(version, function (releasePath) {
         // 工程缓存路径 /demo/cache
         let cachePath = path.join(name,"cache");
+
         // 开发包
         let devCachePath = path.join(cachePath,"dev");
         let packageFile = path.join(name, "package.json");
@@ -458,10 +475,14 @@ function updateProject(names, version, platformName, devName) {
                 // cache/index.html , cache/index.js
                 let indexHtml = path.join(src,"index.html");
                 let indexJs = path.join(src,"index.js");
-                // 删除index.html,index.js文件以后再复制,防止覆盖用户原本的业务
+
+                try{
+                // // 删除index.html,index.js文件以后再复制,防止覆盖用户原本的业务
                     fs.existsSync(indexHtml) && fs.unlink(indexHtml);
                     fs.existsSync(indexJs) && fs.unlink(indexJs);
-
+                }catch(e){
+                    console.log(e);
+                }
                     return true;
             }
             // 初始化平台
@@ -473,8 +494,11 @@ function updateProject(names, version, platformName, devName) {
                     return
                 }
                 log("Update platform...");
-                // 项目路径 /
-                fs.copySync(platformDirName, rootName, { filter: filterFunc });
+                let buijs = path.join(platformDirName,"js");
+                let buijsSrc = path.join(rootName,"js");
+                // 更新平台下的js目录
+                // fs.copySync(platformDirName, rootName, { filter: filterFunc });
+                fs.copySync(buijs, buijsSrc);
                 log("Platform update done.");
             }
             // 初始化dev

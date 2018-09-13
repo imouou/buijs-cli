@@ -5,7 +5,9 @@
 |:-------------------|-------------------:|
 |新增update命令,修复update平台时,会覆盖index.html,index.js问题    |2018-2-1    |
 |新增NPM开发模式,修改了目录规范,修复无网络无法创建问题    |2018-3-25    |
-|新增buijs update -d 更新工程NPM命令模式    |2018-4-12    |
+|新增buijs update -d 更新工程gulpfile.js package.json app.json    |2018-4-12    |
+|修复buijs create 不能在同个工程下创建子工程    |2018-5-30    |
+|新增对相同模板目录的检测,避免重复覆盖    |2018-8-01    |
 
 ## 一、简介
 
@@ -25,14 +27,14 @@
 
 ## 二、安装buijs命令行工具
 
-> 需要先安装 [node环境](https://nodejs.org/zh-cn/) 才能使用npm命令. 
+> 需要先安装 [node环境](https://nodejs.org/zh-cn/) 才能使用npm命令. 如果下载缓慢,建议先安装[淘宝的npm镜像](https://npm.taobao.org/), 把以下命令的`npm`换成`cnpm`;
 
-*windows: *
+*windows:*
 ```bash
-$ npm install -g buijs
+npm install -g buijs
 ```
 
-*mac: 需要权限,执行sudo以后,还要输入密码回车确认*
+*mac: 一般需要权限,需要加sudo,还要输入密码回车确认*
 ```bash
 $ sudo npm install -g buijs
 ```
