@@ -205,8 +205,17 @@ function fetchRelease(version, cb) {
  * @param  {string} [dev] init NPM Package.json
  */
 function initProject(names, version, templateName, platformName) {
-    // 获得当前路径
-    let name = names || path.resolve('./');
+// 获得当前路径
+    var name = '';
+    if( names && names.includes('.') ){
+        name = path.resolve('./');
+        version = names;
+    }else{
+        name = names || path.resolve('./');
+        version = version;
+    }
+    
+    console.log(version,name)
     let jsDir = path.join(name,"js");
     let pagesDir = path.join(name,"pages");
     // 通过判断当前目录下是否有
