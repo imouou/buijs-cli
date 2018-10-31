@@ -158,6 +158,7 @@ bui.ajax({
 | `buijs list`       |显示可用的版本    |
 | `buijs list-template`       |显示可用的模板列表 [BUI模板图片预览](https://github.com/imouou/BUI-Template/)    |
 | `buijs list-platform`       |显示可用的平台列表    |
+| `buijs clear`       |清除下载的模板缓存    |
 
 ### NPM 命令列表
 

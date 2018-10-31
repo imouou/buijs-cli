@@ -374,6 +374,16 @@ function initProject(names, version, templateName, platformName) {
 
 }
 
+// 清除掉下载的缓存
+function clearCache() {
+    let hasCache = fs.existsSync(CACHE_TEMPLATE_PATH);
+
+    if( hasCache ){
+        // 最后删除模板文件夹
+        fs.removeSync(CACHE_TEMPLATE_PATH);
+    }
+}
+
 /**
  * 升级项目的bui版本,不覆盖index.html,index.js两个文件.
  * @param  {string} [name] project name.
@@ -611,6 +621,13 @@ var args = yargs
         desc: "List available version of template releases.",
         handler: function() {
             displayReleases();
+        }
+    })
+    .command({
+        command: "clear",
+        desc: "clear cache.",
+        handler: function() {
+            clearCache();
         }
     })
     .command({
