@@ -9,6 +9,7 @@
 |修复buijs create 不能在同个工程下创建子工程    |2018-5-30    |
 |新增对相同模板目录的检测,避免重复覆盖    |2018-8-01    |
 |修复输入版本号前必须输入工程名    |2018-10-31    |
+|新增多工程共享 node_modules目录    |2018-12-07    |
 
 > ##重要更新
 1.4.8 包含之前的版本是基于`540设计稿规范`, 新版1.5.0是基于`750设计稿规范`, 所以两个版本的使用方式及表现都是不同的, 旧工程不建议升级. 默认未指定版本, 都是基于1.5.0创建的750规范. 模板也是750. 如果旧项目想使用模板名, 需要先重新安装`buijs`, 在创建前加上 1.4.8 最新540规范版本. 
@@ -260,7 +261,7 @@ buijs update -d
 | gulpfile.js     |入口文件    |
 | package.json    |npm依赖配置文件    |
 | app.json    |入口文件    |
-| dist/     | 编译打包的目录    |
+| dist/     | 编译打包最终要部署的目录    |
 | src/index.html     |入口文件    |
 | src/index.js       |入口的脚本    |
 | src/css/bui.css  |BUI库的样式文件    |
@@ -276,36 +277,14 @@ buijs update -d
 | src/pages/main/main.html      | 默认 main 模块模板    |
 | src/pages/main/main.js      | 默认 main 模块定义脚本    |
 
-## 八、手动引入
+## 八、多个bui工程共享`node_modules`模块目录
 
-**不使用`buijs` cli命令行工具,你也依然可以使用bui,只需下载引入对应的脚本及样式库就行.**
+> 现在每次创建一个工程以后, 每次都需要执行 `npm install` 特别的繁琐, 通过以下步骤, 可以创建一个bui的相关工程共享 `node_modules`
 
-```html
-<!DOCTYPE HTML>
-<html>
-<head>
-    <title>BUI开发工程页面</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-    <link href="//unpkg.com/buijs/lib/latest/bui.css" rel="stylesheet">
-</head>
-<body>
-    <div class="bui-page">
-        <header></header>
-        <main>
-            <!-- 正文内容 -->
-        </main>
-        <footer></footer>
-    </div>
+1. 升级buijs 0.5.3
+2. 创建bui工程目录, 作为所有工程目录 `buijs create bui-projects`, 删除 <del>src目录,app.json</del> ,只保留 `package.json, gulpfile.js `
+3. `npm install` 安装依赖模块
+4. `buijs create project1` 创建带工程名的工程
+5. `npm run dev-project1` 运行服务 或者 `npm run build-project1` 编译打包
 
-    <script src="//unpkg.com/buijs/lib/zepto.js"></script>
-    <script src="//unpkg.com/buijs/lib/latest/bui.js"></script>
-    <script>
-      bui.ready(function(){
-          // 控件初始化
-      })
-    </script>
-</body>
-</html>
-```
-
-<a href="http://jsbin.com/jukuvec/edit?html,js,output" target="_blank">在线体验BUI,自己动手DIY</a>
+> project1/gulpfile.js, project1/package.json 这两个文件则不需要了
