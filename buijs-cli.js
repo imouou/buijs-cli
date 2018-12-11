@@ -290,14 +290,13 @@ function initProject(names, version, templateName, platformName) {
             if (!isExistProject) {
                 fs.copySync(cachePath, rootName);
             }
-            // 获取根目录下的package.json
-            var packageFile = path.join(path.resolve('./'), 'package.json');
-            var package = require(packageFile);
 
-            // 修改多工程的项目名
-            if (names) {
+            if (fs.existsSync("package.json") && names) {
+
+                // 修改多工程的项目名
                 modifyPackage(names);
             }
+
             // 复制模板或者平台
             if (templateName || platformName) {
 
@@ -354,13 +353,26 @@ function initProject(names, version, templateName, platformName) {
 
             // 写入package配置多工程名
             function modifyPackage(name) {
-                log("modify package.json")
+                log("modify package.json");
+                // 获取根目录下的package.json
+                var packageFile = path.join(path.resolve('./'), 'package.json');
+                var package = require(packageFile);
+
+                if ("projects" in package) {
                     // 设置json文件
-                package.projects[name] = name + '/app.json';
-                package.scripts[`dev-${name}`] = `cross-env NODE_ENV=${name} gulp dev`;
-                package.scripts[`build-${name}`] = `cross-env NODE_ENV=${name} gulp build`;
-                // 找到文件并同步修改
-                fs.writeFileSync(path.resolve(packageFile), JSON.stringify(package, null, 2));
+                    package.projects[name] = name + '/app.json';
+                    package.scripts[`dev-${name}`] = `cross-env NODE_ENV=${name} gulp dev`;
+                    package.scripts[`build-${name}`] = `cross-env NODE_ENV=${name} gulp build`;
+                    // 找到文件并同步修改
+                    fs.writeFileSync(path.resolve(packageFile), JSON.stringify(package, null, 2));
+                } else {
+                    package.projects = {};
+                    package.projects[name] = name + '/app.json';
+                    package.scripts[`dev-${name}`] = `cross-env NODE_ENV=${name} gulp dev`;
+                    package.scripts[`build-${name}`] = `cross-env NODE_ENV=${name} gulp build`;
+                    // 找到文件并同步修改
+                    fs.writeFileSync(path.resolve(packageFile), JSON.stringify(package, null, 2));
+                }
 
             }
             // 初始化平台
