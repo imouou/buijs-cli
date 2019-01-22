@@ -10,14 +10,8 @@
 |新增对相同模板目录的检测,避免重复覆盖    |2018-8-01    |
 |修复输入版本号前必须输入工程名    |2018-10-31    |
 |新增多工程共享 node_modules目录    |2018-12-07    |
+|新增创建新模块命令 buijs create -m 模块名    |2019-01-22    |
 
-> ##重要更新
-1.4.8 包含之前的版本是基于`540设计稿规范`, 新版1.5.0是基于`750设计稿规范`, 所以两个版本的使用方式及表现都是不同的, 旧工程不建议升级. 默认未指定版本, 都是基于1.5.0创建的750规范. 模板也是750. 如果旧项目想使用模板名, 需要先重新安装`buijs`, 在创建前加上 1.4.8 最新540规范版本. 
-
-旧项目使用指定版本模板示例:
-```
-$ buijs create 1.4.8 -t page-login 
-```
 
 ## 一、简介
 
@@ -34,6 +28,14 @@ $ buijs create 1.4.8 -t page-login
 7. 支持sass编译;
 8. 减少对工具的依赖
 
+
+> ##重要更新
+1.4.8 包含之前的版本是基于`540设计稿规范`, 新版1.5.0是基于`750设计稿规范`, 所以两个版本的使用方式及表现都是不同的, 旧工程不建议升级. 默认未指定版本, 都是基于1.5.0创建的750规范. 模板也是750. 如果旧项目想使用模板名, 需要先重新安装`buijs`, 在创建前加上 1.4.8 最新540规范版本.
+
+旧项目使用指定版本模板示例:
+```
+$ buijs create 1.4.8 -t page-login
+```
 
 ## 二、安装buijs命令行工具
 
@@ -54,24 +56,24 @@ $ sudo npm install -g buijs
 ![buijs 创建工程预览](http://www.easybui.com/docs/images/router/buijs-create-demo_low.gif)
 
 
-### 3.1 创建默认Webapp工程 
+### 3.1 创建默认Webapp工程
 
 ```bash
 
 # * 创建webapp工程 (demo 为工程名称, 如果没有,则在当前目录)
-$ buijs create demo 
+$ buijs create demo
 
 # * 进入工程目录
 $ cd demo
 
 # * 安装依赖
-$ npm install 
+$ npm install
 
 # * 自动打开浏览器并监听js,scss,html等文件的修改
 $ npm run dev
 
 
-# 非必须命令,编译工程,生成dist目录,压缩脚本,样式,图片,用于发布打包的安全, 会清空之前目录,重新根据`src`目录生成.
+# 非必须命令,编译工程,生成dist目录,压缩脚本,样式,图片,用于发布打包的安全, 会清空之前目录,重新根据`src`目录生成. 另外, es6 的模块化 import ,Objece.assign 等方法不要使用, 会导致编译后在部分手机无法运行
 
 $ npm run build
 
@@ -81,7 +83,7 @@ $ npm run build
 
 ### 3.2 自动打开默认浏览器,  修改src 目录的相同文件,就会生成对应的dist文件,用于预览.  
 
-`http://localhost:port` 
+`http://localhost:port`
 
 `port`端口自动生成, 一个端口对应一个工程, 如需更改同样是在`app.json` 配置.
 
@@ -97,9 +99,9 @@ $ npm run build
 
 ### 接口跨域
 
-打开根目录下的 `app.json` ,里面有个 `proxy` 的对象, key值为接口的目录名, `target` 为域名的host. 
+打开根目录下的 `app.json` ,里面有个 `proxy` 的对象, key值为接口的目录名, `target` 为域名的host.
 
-假设请求的接口地址为: http://www.easybui.com/api/getDetail/id/123 
+假设请求的接口地址为: http://www.easybui.com/api/getDetail/id/123
 
 需要这样配置 proxy :
 
@@ -124,7 +126,7 @@ var apiUrl = "";
 bui.ajax({
     url: apiUrl+ "api/getDetail/id/123"
 }).then(function(res){
-    
+
 })
 ```
 
@@ -153,13 +155,14 @@ bui.ajax({
 | `buijs -v`       |查看当前工具的版本    |
 | `buijs -h`       |命令帮助信息    |
 | `buijs create `  |在当前目录创建bui webapp默认工程    |
-| `buijs create [projectName] [version] [-t templateName] [-p platformName]`       |创建工程,支持指定版本,指定模板,指定平台,相同目录下会覆盖    |
+| `buijs create [projectName] [version] [-t templateName] [-p platformName] [-m moduleName]`       |创建工程,支持指定版本,指定模板,指定平台,相同目录下会覆盖    |
 | `buijs update` | 在当前项目更新 bui为最新webapp版本,只修改bui.css,bui.js不覆盖项目其它内容    |
 | `buijs update [projectName] [version] [-p platformName] [-d]` | 更新bui为某个版本,某个平台, -d 更新为最新的工程模式(dev)    |
 | `buijs list`       |显示可用的版本    |
 | `buijs list-template`       |显示可用的模板列表 [BUI模板图片预览](https://github.com/imouou/BUI-Template/)    |
 | `buijs list-platform`       |显示可用的平台列表    |
 | `buijs clear`       |清除下载的模板缓存    |
+| `buijs create -m 模块名 `  新     | 创建新的模块    |
 
 ### NPM 命令列表
 
@@ -181,10 +184,10 @@ $ buijs list-template
 # 进入当前工程 demo
 $ cd demo
 
-# 替换main模板 
+# 替换main模板
 $ buijs create -t main-tab
 
-# 新增login模板 
+# 新增login模板
 $ buijs create -t page-login
 
 ```
@@ -199,11 +202,11 @@ $ buijs create -t page-login
 3. 同一个工程只能创建一个平台, 多次创建会相互覆盖;
 
 
-### 创建指定平台工程 ( dcloud 为平台名称 ) 
+### 创建指定平台工程 ( dcloud 为平台名称 )
 
 可以先查看有什么平台选择 `buijs list-platform`
 > <strong style="color:red">注意:</strong>
-1. 目前已经支持以下打包平台 cordova,bingotouch,dcloud,apicloud,appcan,微信 等; 
+1. 目前已经支持以下打包平台 cordova,bingotouch,dcloud,apicloud,appcan,微信 等;
 2. 不同平台对应的文件会有些许不同, 绑定原生后退的方法也不同, 不指定平台时, 默认是webapp平台, 可以在微信及webkit浏览器内核预览.
 
 以下内容都是以进入 demo 工程示例.
@@ -251,8 +254,16 @@ buijs update -p bingotouch
 buijs update -d
 ```
 
+### 创建新模块
 
-## 七、目录说明: 
+模块的访问路径: 默认: `index.html#pages/article/article`
+
+```bash
+buijs create -d article
+```
+
+
+## 七、目录说明:
 
 **单页应用包文件夹说明:**
 

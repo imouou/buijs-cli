@@ -36,6 +36,7 @@ function error(msg) {
 }
 
 // 默认缓存内容至 ~/CACHE_DIR
+// /Users/xxx/.buijs/
 const CACHE_DIR_NAME = ".buijs";
 const CACHE_DIR_PATH = path.join(require('os').homedir(), CACHE_DIR_NAME);
 const CACHE_TEMPLATE_PATH = path.join(CACHE_DIR_PATH, "template");
@@ -205,9 +206,10 @@ function fetchRelease(version, cb) {
  * @param  {string} [platformName] init platforms/ dir with specified template
  * @param  {string} [dev] init NPM Package.json
  */
-function initProject(names, version, templateName, platformName) {
+function initProject(names, version, templateName, platformName, moduleName) {
     // 获得当前路径
     var name = '';
+    var defaultNewModule = "page-newmodule"; // 默认新模块的名字
     if (names && names.includes('.')) {
         name = path.resolve('./');
         version = names;
@@ -220,7 +222,7 @@ function initProject(names, version, templateName, platformName) {
     let pagesDir = path.join(name, "pages");
     // 通过判断当前目录下是否有
     let hasJsFolder = fs.existsSync(jsDir) || fs.existsSync(pagesDir);
-    // 如果是开发模式,源码全在src目录,并且有 package.json 
+    // 如果是开发模式,源码全在src目录,并且有 package.json
     let rootName = hasJsFolder ? name : name + '/src';
 
     // 检测是否存在当前模板
@@ -297,8 +299,8 @@ function initProject(names, version, templateName, platformName) {
                 modifyPackage(names);
             }
 
-            // 复制模板或者平台
-            if (templateName || platformName) {
+            // 复制模板或者平台或者新的模块
+            if (templateName || platformName || moduleName) {
 
                 // 缓存模板文件夹路径 /demo/cache/templates/
                 let templateCacheDir = path.join(cachePath, templateDirName);
@@ -318,7 +320,21 @@ function initProject(names, version, templateName, platformName) {
                     }
                     log("Copying template file.");
                     initTemplate(templateNameCache);
+                }
+                if( moduleName ){
+                    // /demo/cache/templates/page-newmodule
+                    let templateNameCache = path.join(templateCacheDir, defaultNewModule);
 
+                    if (!fs.existsSync(templateNameCache)) {
+                        // 删除缓存
+                        fs.removeSync(cachePath);
+                        error("template " + templateName + " is not exist");
+                        // return;
+                    }
+                    log("Copying template file.");
+                    initTemplate(templateNameCache);
+                    // 重命名新模块
+                    moduleName && renameModule(moduleName);
                 }
                 // 复制平台需要的文件
                 if (platformName) {
@@ -387,6 +403,46 @@ function initProject(names, version, templateName, platformName) {
                 fs.copySync(platformDirName, rootName);
                 log("Copy platforms done.");
             }
+
+            // 修改模块名字
+
+            function renameModule(moduleName) {
+
+              // 修改目录里面的文件
+              var pathModuleHtml = path.join(rootName,`pages/${defaultNewModule}/${defaultNewModule}.html`)
+              var pathNewModuleHtml = path.join(rootName,`pages/${defaultNewModule}/${moduleName}.html`)
+
+              fs.rename(pathModuleHtml,pathNewModuleHtml, function(err){
+                 if(err){
+                  throw err;
+                 }
+              })
+              // 修改目录里面的文件
+              var pathModuleJs = path.join(rootName,`pages/${defaultNewModule}/${defaultNewModule}.js`)
+              var pathNewModuleJs = path.join(rootName,`pages/${defaultNewModule}/${moduleName}.js`)
+
+              fs.rename(pathModuleJs,pathNewModuleJs, function(err){
+                 if(err){
+                  throw err;
+                 }
+              })
+
+              // 修改目录
+              var pathModuleRoot = path.join(rootName,`pages/${defaultNewModule}`)
+              var pathNewModuleRoot = path.join(rootName,`pages/${moduleName}`)
+              // 修改目录
+              fs.rename(pathModuleRoot,pathNewModuleRoot, function(err){
+                 if(err){
+                   warn(`存在相同的模块目录:${moduleName},请更换个名字重试!`);
+                   fs.removeSync(pathModuleRoot);
+
+                   return;
+                  // throw err;
+                 }
+                 log(`create ${moduleName} Module done!`);
+              })
+
+            }
             // 初始化模板
             function initTemplate(templateDirName) {
                 log("Initing template...");
@@ -439,7 +495,7 @@ function updateProject(names, version, platformName, devName) {
     }
     // 通过判断当前目录下是否有
     let hasJsFolder = fs.existsSync(path.join(name, "js")) || fs.existsSync(path.join(name, "pages"));
-    // 如果是开发模式,源码全在src目录,并且有 package.json 
+    // 如果是开发模式,源码全在src目录,并且有 package.json
     let rootName = hasJsFolder ? name : name + '/src';
 
     // 如果用户有传项目名称,没有则在当前目录创建,检测是否存在js目录,用于检测
@@ -637,10 +693,13 @@ var args = yargs
             }).option('platform', {
                 alias: 'p',
                 describe: 'Init with specified platform.'
+            }).option('module', {
+                alias: 'm',
+                describe: 'Init with module.'
             })
         },
         handler: function(argv) {
-            initProject(argv.name, argv.version, argv.template, argv.platform);
+            initProject(argv.name, argv.version, argv.template, argv.platform, argv.module);
         }
     })
     .command({
