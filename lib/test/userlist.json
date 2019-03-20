@@ -1,0 +1,78 @@
+{
+    "data": [
+        {
+            "uid": "1",
+            "name": "王某某",
+            "image": "http://easybui.com/demo/images/face.png",
+            "phone": "13800138000",
+            "email": "wxx@easybui.net",
+            "createtime": "1402731722"
+        },
+        {
+            "uid": "2",
+            "name": "区某某",
+            "image": "http://easybui.com/demo/images/face.png",
+            "phone": "13800138000",
+            "email": "oxx@easybui.net",
+            "createtime": "1402731722"
+        },
+        {
+            "uid": "3",
+            "name": "邝某某",
+            "image": "http://easybui.com/demo/images/face.png",
+            "phone": "13800138000",
+            "email": "kxx@easybui.net",
+            "createtime": "1402731722"
+        },
+        {
+            "uid": "4",
+            "name": "范某",
+            "image": "http://easybui.com/demo/images/face.png",
+            "phone": null,
+            "email": "fxx@easybui.net",
+            "createtime": "1402731722"
+        },
+        {
+            "uid": "5",
+            "name": "唐某",
+            "image": "http://easybui.com/demo/images/face.png",
+            "phone": null,
+            "email": "txx@easybui.net",
+            "createtime": "1402731722"
+        },
+        {
+            "uid": "6",
+            "name": "杨某",
+            "image": "http://easybui.com/demo/images/face.png",
+            "phone": null,
+            "email": "yxx@easybui.net",
+            "createtime": "1402731722"
+        },
+        {
+            "uid": "7",
+            "name": "丁某",
+            "image": "http://easybui.com/demo/images/face.png",
+            "phone": null,
+            "email": "dxx@easybui.net",
+            "createtime": "1402731722"
+        },
+        {
+            "uid": "8",
+            "name": "梁某某",
+            "image": "http://easybui.com/demo/images/face.png",
+            "phone": null,
+            "email": "lxr@easybui.net",
+            "createtime": "1402731722"
+        },
+        {
+            "uid": "9",
+            "name": "陈某某",
+            "image": "http://easybui.com/demo/images/face.png",
+            "phone": null,
+            "email": "cxr@easybui.net",
+            "createtime": "1402731722"
+        }
+    ],
+    "info": "获取成功",
+    "status": 0
+}

@@ -1,0 +1,8 @@
+{
+    "versionName" : "1.5.2",
+    "versionCode" : 20190302,
+    "minVersionCode" : 20181010,
+    "isForced" : false,
+    "downloadUrl" : "http://www.easybui.com/downloads/source/bui/release/bui_demo_dcloud.apk",
+    "remark" : "<div style='text-align:left;'><p>1. 新增单页路由</p><p>2. 新增模块化开发</p><p>3. 支持路由切换动画</p><p>4. 修复已知bug</p></div>"
+}

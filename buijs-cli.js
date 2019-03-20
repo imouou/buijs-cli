@@ -43,8 +43,29 @@ const CACHE_TEMPLATE_PATH = path.join(CACHE_DIR_PATH, "template");
 const TMP_DOWNLOAD_PATH = path.join(CACHE_TEMPLATE_PATH, "download.zip");
 const RELEASES_JSON_PATH = path.join(CACHE_TEMPLATE_PATH, "release.json");
 
+// Github api
+var GITHUB_REPO = "https://api.github.com/repos/imouou/BUI-Template/releases";
+// Github下载: https://github.com/imouou/BUI-Template/archive/1.5.14.zip
+// Gitee API 
+var GITEE_REPO = "https://gitee.com/api/v5/repos/imouou/BUI-Template/releases";
+// Gitee 下载, https://gitee.com/imouou/BUI-Template/repository/archive/1.5.14.zip
 
-const BUI_TEMPLATE_RELEASE_URL = "https://api.github.com/repos/imouou/BUI-Template/releases";
+var BUI_TEMPLATE_RELEASE_URL = GITHUB_REPO;
+
+// toggle repo 数据源切换
+function toggleRepo(name) {
+
+    switch (name) {
+        case "github":
+            BUI_TEMPLATE_RELEASE_URL = GITHUB_REPO;
+            log("change repo github", BUI_TEMPLATE_RELEASE_URL)
+            break;
+        case "gitee":
+            BUI_TEMPLATE_RELEASE_URL = GITEE_REPO;
+            log("change repo gitee", BUI_TEMPLATE_RELEASE_URL)
+            break;
+    }
+}
 
 function getReleaseUrl(tag) {
     return BUI_TEMPLATE_RELEASE_URL + "/" + (tag ? `tags/${tag}` : "latest");
@@ -96,6 +117,7 @@ function downloadAndUnzip(url, savePath, cb) {
     }).on("error", function(err) {
         console.log(err);
     });
+    // log(url);
     request.get(url)
         .on("error", function(err) {
             error(`Error downloading release: ${err}`);
@@ -180,7 +202,7 @@ function fetchRelease(version, cb) {
         let info = JSON.parse(body);
         let newInfo = {};
         let tag = newInfo.tag = info["tag_name"];
-        newInfo.time = info["published_at"];
+        newInfo.time = info["published_at"] || info["created_at"];
         newInfo.path = newInfo.tag;
         let targetPath = path.join(CACHE_TEMPLATE_PATH, newInfo.path);
         if (fs.pathExistsSync(targetPath)) {
@@ -189,7 +211,10 @@ function fetchRelease(version, cb) {
             cb(targetPath);
             return;
         }
-        downloadAndUnzip(info["zipball_url"], targetPath, function() {
+        // github: obj[zipball_url]
+        // gitee: obj[assets][0][browser_download_url]
+        let downloadUrl = info.hasOwnProperty("zipball_url") ? info["zipball_url"] : info["assets"] && info["assets"][0] && info["assets"][0]["browser_download_url"] || "";
+        downloadAndUnzip(downloadUrl, targetPath, function() {
             releasesInfo[tag] = newInfo;
             jsonfile.writeFileSync(RELEASES_JSON_PATH, releasesInfo, { spaces: 2 });
             cb(targetPath);
@@ -206,7 +231,7 @@ function fetchRelease(version, cb) {
  * @param  {string} [platformName] init platforms/ dir with specified template
  * @param  {string} [dev] init NPM Package.json
  */
-function initProject(names, version, templateName, platformName, moduleName) {
+function initProject(names, version, templateName, platformName, moduleName, repoName) {
     // 获得当前路径
     var name = '';
     var defaultNewModule = "page-newmodule"; // 默认新模块的名字
@@ -216,6 +241,9 @@ function initProject(names, version, templateName, platformName, moduleName) {
     } else {
         name = names || path.resolve('./');
         version = version;
+    }
+    if (repoName) {
+        toggleRepo(repoName);
     }
 
     let jsDir = path.join(name, "js");
@@ -321,7 +349,7 @@ function initProject(names, version, templateName, platformName, moduleName) {
                     log("Copying template file.");
                     initTemplate(templateNameCache);
                 }
-                if( moduleName ){
+                if (moduleName) {
                     // /demo/cache/templates/page-newmodule
                     let templateNameCache = path.join(templateCacheDir, defaultNewModule);
 
@@ -408,39 +436,39 @@ function initProject(names, version, templateName, platformName, moduleName) {
 
             function renameModule(moduleName) {
 
-              // 修改目录里面的文件
-              var pathModuleHtml = path.join(rootName,`pages/${defaultNewModule}/${defaultNewModule}.html`)
-              var pathNewModuleHtml = path.join(rootName,`pages/${defaultNewModule}/${moduleName}.html`)
+                // 修改目录里面的文件
+                var pathModuleHtml = path.join(rootName, `pages/${defaultNewModule}/${defaultNewModule}.html`)
+                var pathNewModuleHtml = path.join(rootName, `pages/${defaultNewModule}/${moduleName}.html`)
 
-              fs.rename(pathModuleHtml,pathNewModuleHtml, function(err){
-                 if(err){
-                  throw err;
-                 }
-              })
-              // 修改目录里面的文件
-              var pathModuleJs = path.join(rootName,`pages/${defaultNewModule}/${defaultNewModule}.js`)
-              var pathNewModuleJs = path.join(rootName,`pages/${defaultNewModule}/${moduleName}.js`)
+                fs.rename(pathModuleHtml, pathNewModuleHtml, function(err) {
+                        if (err) {
+                            throw err;
+                        }
+                    })
+                    // 修改目录里面的文件
+                var pathModuleJs = path.join(rootName, `pages/${defaultNewModule}/${defaultNewModule}.js`)
+                var pathNewModuleJs = path.join(rootName, `pages/${defaultNewModule}/${moduleName}.js`)
 
-              fs.rename(pathModuleJs,pathNewModuleJs, function(err){
-                 if(err){
-                  throw err;
-                 }
-              })
+                fs.rename(pathModuleJs, pathNewModuleJs, function(err) {
+                    if (err) {
+                        throw err;
+                    }
+                })
 
-              // 修改目录
-              var pathModuleRoot = path.join(rootName,`pages/${defaultNewModule}`)
-              var pathNewModuleRoot = path.join(rootName,`pages/${moduleName}`)
-              // 修改目录
-              fs.rename(pathModuleRoot,pathNewModuleRoot, function(err){
-                 if(err){
-                   warn(`存在相同的模块目录:${moduleName},请更换个名字重试!`);
-                   fs.removeSync(pathModuleRoot);
+                // 修改目录
+                var pathModuleRoot = path.join(rootName, `pages/${defaultNewModule}`)
+                var pathNewModuleRoot = path.join(rootName, `pages/${moduleName}`)
+                    // 修改目录
+                fs.rename(pathModuleRoot, pathNewModuleRoot, function(err) {
+                    if (err) {
+                        warn(`存在相同的模块目录:${moduleName},请更换个名字重试!`);
+                        fs.removeSync(pathModuleRoot);
 
-                   return;
-                  // throw err;
-                 }
-                 log(`create ${moduleName} Module done!`);
-              })
+                        return;
+                        // throw err;
+                    }
+                    log(`create ${moduleName} Module done!`);
+                })
 
             }
             // 初始化模板
@@ -484,7 +512,7 @@ function clearCache() {
  * @param  {string} [platformName] init platforms/ dir with specified template
  * @param  {string} [dev] 更新gulpfile.js package.js app.json
  */
-function updateProject(names, version, platformName, devName) {
+function updateProject(names, version, platformName, devName, repoName) {
     var name = '';
     if (names && names.includes('.')) {
         name = path.resolve('./');
@@ -493,6 +521,11 @@ function updateProject(names, version, platformName, devName) {
         name = names || path.resolve('./');
         version = version;
     }
+
+    if (repoName) {
+        toggleRepo(repoName);
+    }
+
     // 通过判断当前目录下是否有
     let hasJsFolder = fs.existsSync(path.join(name, "js")) || fs.existsSync(path.join(name, "pages"));
     // 如果是开发模式,源码全在src目录,并且有 package.json
@@ -696,10 +729,13 @@ var args = yargs
             }).option('module', {
                 alias: 'm',
                 describe: 'Init with module.'
+            }).option('from', {
+                alias: 'f',
+                describe: 'from repo.'
             })
         },
         handler: function(argv) {
-            initProject(argv.name, argv.version, argv.template, argv.platform, argv.module);
+            initProject(argv.name, argv.version, argv.template, argv.platform, argv.module, argv.from);
         }
     })
     .command({
@@ -712,10 +748,13 @@ var args = yargs
             }).option('dev', {
                 alias: 'd',
                 describe: 'Update npm command.'
+            }).option('from', {
+                alias: 'f',
+                describe: 'from repo.'
             })
         },
         handler: function(argv) {
-            updateProject(argv.name, argv.version, argv.platform, argv.dev);
+            updateProject(argv.name, argv.version, argv.platform, argv.dev, argv.from);
         }
     })
     .command({

@@ -11,6 +11,7 @@
 |修复输入版本号前必须输入工程名    |2018-10-31    |
 |新增多工程共享 node_modules目录    |2018-12-07    |
 |新增创建新模块命令 buijs create -m 模块名    |2019-01-22    |
+|新增更改数据源命令, 默认是 github.  buijs create -f github || gitee     |2019-03-20    |
 
 
 ## 一、简介
@@ -79,6 +80,8 @@ $ npm run build
 
 ```
 **注意:** `npm run dev`使用这个命令样式的修改都需要在 `src/scss/style.scss` 文件,可以分模块引入,如果直接修改`src/css/style.css`,需要删除`src/scss`目录,避免style.css被覆盖.
+
+> 如 github 下载缓慢, 可以使用新的命令 `buijs create -f gitee` 使用码云的下载源. buijs 需要更新到 0.6.6 以上才有.
 
 
 ### 3.2 自动打开默认浏览器,  修改src 目录的相同文件,就会生成对应的dist文件,用于预览.  
@@ -155,14 +158,15 @@ bui.ajax({
 | `buijs -v`       |查看当前工具的版本    |
 | `buijs -h`       |命令帮助信息    |
 | `buijs create `  |在当前目录创建bui webapp默认工程    |
-| `buijs create [projectName] [version] [-t templateName] [-p platformName] [-m moduleName]`       |创建工程,支持指定版本,指定模板,指定平台,相同目录下会覆盖    |
+| `buijs create [projectName] [version] [-t templateName] [-p platformName] [-m moduleName] [-f from]`       |创建工程,支持指定版本,指定模板,指定平台,相同目录下会覆盖    |
 | `buijs update` | 在当前项目更新 bui为最新webapp版本,只修改bui.css,bui.js不覆盖项目其它内容    |
-| `buijs update [projectName] [version] [-p platformName] [-d]` | 更新bui为某个版本,某个平台, -d 更新为最新的工程模式(dev)    |
+| `buijs update [projectName] [version] [-p platformName] [-d dev] [-f from]` | 更新bui为某个版本,某个平台, -d 更新为最新的工程模式(dev)    |
 | `buijs list`       |显示可用的版本    |
 | `buijs list-template`       |显示可用的模板列表 [BUI模板图片预览](https://github.com/imouou/BUI-Template/)    |
 | `buijs list-platform`       |显示可用的平台列表    |
 | `buijs clear`       |清除下载的模板缓存    |
-| `buijs create -m 模块名 `  新     | 创建新的模块    |
+| `buijs create -m 模块名 `  新     | 创建新的模块  m = module  |
+| `buijs create -f 数据源 `  新     | 创建工程来自 gitee 或者 github , 默认是 github  f = from    |
 
 ### NPM 命令列表
 

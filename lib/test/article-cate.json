@@ -1,0 +1,37 @@
+[
+    {
+        "Id": "3a083ed4-8119-49e5-a363-50411805d61f",
+        "Name": "技术前沿",
+        "Colors": "#368ac7",
+        "ImgPath": "http://218.201.251.86/innoapp/FileLoad/InfoType/01bfb910c21e2f29.png",
+        "ArticleNum": "420"
+    },
+    {
+        "Id": "7094a872-6ff0-4a66-afa1-b73456ba0eb1",
+        "Name": "创新硬件",
+        "Colors": "#175480",
+        "ImgPath": "http://218.201.251.86/innoapp/FileLoad/InfoType/f6165d008e260236.png",
+        "ArticleNum": "38"
+    },
+    {
+        "Id": "b2931ee0-b71e-4e5f-aa55-91b2c376036a",
+        "Name": "管理创新",
+        "Colors": "#6fd161",
+        "ImgPath": "http://218.201.251.86/innoapp/FileLoad/InfoType/c0fd45d80e644852.png",
+        "ArticleNum": "387"
+    },
+    {
+        "Id": "c34969b2-3089-4403-a3bc-0b8e80f40d07",
+        "Name": "技术管理",
+        "Colors": "#2071ab",
+        "ImgPath": "http://218.201.251.86/innoapp/FileLoad/InfoType/e534db1a5bd547db.png",
+        "ArticleNum": "84"
+    },
+    {
+        "Id": "d4601d5c-d0bd-453e-94f7-3a6f6e628613",
+        "Name": "创新思维",
+        "Colors": "#e9b30f",
+        "ImgPath": "http://218.201.251.86/innoapp/FileLoad/InfoType/66b3e5fedbba30d8.png",
+        "ArticleNum": "22"
+    }
+]
