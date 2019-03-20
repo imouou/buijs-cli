@@ -11,7 +11,7 @@
 |修复输入版本号前必须输入工程名    |2018-10-31    |
 |新增多工程共享 node_modules目录    |2018-12-07    |
 |新增创建新模块命令 buijs create -m 模块名    |2019-01-22    |
-|新增更改数据源命令, 默认是 github.  buijs create -f github || gitee     |2019-03-20    |
+|新增更改数据源命令, 默认是 github.  buijs create -f gitee     |2019-03-20    |
 
 
 ## 一、简介
@@ -298,8 +298,40 @@ buijs create -d article
 
 1. 升级buijs 0.5.3
 2. 创建bui工程目录, 作为所有工程目录 `buijs create bui-projects`, 删除 <del>src目录,app.json</del> ,只保留 `package.json, gulpfile.js `
-3. `npm install` 安装依赖模块
-4. `buijs create project1` 创建带工程名的工程
-5. `npm run dev-project1` 运行服务 或者 `npm run build-project1` 编译打包
+3. `cd bui-projects` 进入目录
+4. `npm install` 安装依赖模块
+5. `buijs create project1` 创建带工程名的工程
+6. `npm run dev-project1` 运行服务预览 或者 `npm run build-project1` 编译打包
 
+```bash
+# 创建 bui-projects 文件夹作为公共的bui应用目录
+buijs create bui-projects
+
+# 进入这个目录
+cd bui-projects/
+
+# 安装依赖
+npm install
+
+# 创建 project1 工程
+buijs create project1
+
+# 运行预览
+npm run dev-project1
+
+# 编译打包
+npm run build-project1
+```
 > project1/gulpfile.js, project1/package.json 这两个文件则不需要了
+
+## 九、更改数据源
+
+> 国内部分地区创建工程时,个别反应,创建的过程过于缓慢. 现在我们新增一个命令用于指定数据源, 默认是在 `github`, 你可以通过 `-f` 命令,更改到 `gitee`
+
+```bash
+# 从 gitee 的最新版本创建默认工程. 
+buijs create -f gitee
+
+# 创建一次以后,在没有新版本的时候, 创建其它模板, 无需再加入这个 `-f` from命令. 
+buijs create -t main-tab
+```
