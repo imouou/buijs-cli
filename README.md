@@ -12,6 +12,7 @@
 |新增多工程共享 node_modules目录    |2018-12-07    |
 |新增创建新模块命令 buijs create -m 模块名    |2019-01-22    |
 |新增更改数据源命令, 默认是 github.  buijs create -f gitee     |2019-03-20    |
+|完善创建新模块命令,需要结合最新的 buijs 及 bui-template 使用     |2019-08-26    |
 
 
 ## 一、简介
@@ -193,6 +194,12 @@ $ buijs create -t main-tab
 
 # 新增login模板
 $ buijs create -t page-login
+
+# 新增一个新模块 apps 
+$ buijs create -m apps
+
+# 新增一个新子模块 apps/meeting 
+$ buijs create -m apps/meeting
 
 ```
 

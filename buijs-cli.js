@@ -437,23 +437,23 @@ function initProject(names, version, templateName, platformName, moduleName, rep
             function renameModule(moduleName) {
 
                 // 修改目录里面的文件
-                var pathModuleHtml = path.join(rootName, `pages/${defaultNewModule}/${defaultNewModule}.html`)
-                var pathNewModuleHtml = path.join(rootName, `pages/${defaultNewModule}/${moduleName}.html`)
+                // var pathModuleHtml = path.join(rootName, `pages/${defaultNewModule}/index.html`)
+                // var pathNewModuleHtml = path.join(rootName, `pages/${moduleName}/index.html`)
 
-                fs.rename(pathModuleHtml, pathNewModuleHtml, function(err) {
-                        if (err) {
-                            throw err;
-                        }
-                    })
-                    // 修改目录里面的文件
-                var pathModuleJs = path.join(rootName, `pages/${defaultNewModule}/${defaultNewModule}.js`)
-                var pathNewModuleJs = path.join(rootName, `pages/${defaultNewModule}/${moduleName}.js`)
+                // fs.rename(pathModuleHtml, pathNewModuleHtml, function(err) {
+                //         if (err) {
+                //             throw err;
+                //         }
+                //     })
+                //     // 修改目录里面的文件
+                // var pathModuleJs = path.join(rootName, `pages/${defaultNewModule}/index.js`)
+                // var pathNewModuleJs = path.join(rootName, `pages/${defaultNewModule}/${moduleName}/index.js`)
 
-                fs.rename(pathModuleJs, pathNewModuleJs, function(err) {
-                    if (err) {
-                        throw err;
-                    }
-                })
+                // fs.rename(pathModuleJs, pathNewModuleJs, function(err) {
+                //     if (err) {
+                //         throw err;
+                //     }
+                // })
 
                 // 修改目录
                 var pathModuleRoot = path.join(rootName, `pages/${defaultNewModule}`)
