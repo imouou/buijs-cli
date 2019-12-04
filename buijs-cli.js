@@ -138,7 +138,8 @@ function downloadAndUnzip(url, savePath, cb) {
  * @param {string} version 指定版本，如果为空，表示最新版本
  * @param {Function} cb 通过该回调返回 release 的路径，一般形如 ~/.bui-weex/template/0.1.0
  */
-function fetchRelease(version, cb) {
+function fetchRelease(version, cb, needRequest) {
+    needRequest = needRequest === false ? false : true;
     if (version) {
         // Version specified, try cache.
         let info = releasesInfo[version];
@@ -168,6 +169,21 @@ function fetchRelease(version, cb) {
         }
 
         return latestRleaseInfo;
+    }
+
+    if (!needRequest) {
+        // When fetch error, and no version specified, try to figure out the latest release.
+        let latestRleaseInfo = lasRelease();
+
+        if (latestRleaseInfo) {
+            // Figured out latest release in cache.
+            log(`Found latest release in cache: ${latestRleaseInfo.tag}.`)
+            cb(path.join(CACHE_TEMPLATE_PATH, latestRleaseInfo.path));
+            return;
+        } else {
+            log(`需要先创建工程以后,才能创建模块.`)
+        }
+        return;
     }
     request(url, function(err, res, body) {
 
@@ -297,6 +313,9 @@ function initProject(names, version, templateName, platformName, moduleName, rep
     // 创建工程
     function createProject() {
         log("Creating project...");
+
+        // 创建模块名的时候无需请求
+        let needRequest = moduleName ? false : true;
         fetchRelease(version, function(releasePath) {
             // 工程缓存路径 /demo/cache
             let cachePath = path.join(name, "cache");
@@ -489,7 +508,7 @@ function initProject(names, version, templateName, platformName, moduleName, rep
                 fs.copySync(devsDirName, name);
                 log("Copy Dev done.");
             }
-        });
+        }, needRequest);
     }
 
 
