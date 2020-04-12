@@ -13,6 +13,7 @@
 |新增创建新模块命令 buijs create -m 模块名    |2019-01-22    |
 |新增更改数据源命令, 默认是 github.  buijs create -f gitee     |2019-03-20    |
 |完善创建新模块命令,需要结合最新的 buijs 及 bui-template 使用     |2019-08-26    |
+|新增对工程的node不同版本的区分     |2020-04-01    |
 
 
 ## 一、简介
@@ -28,7 +29,8 @@
 5. 自动编译压缩混淆文件,便于打包部署的安全;
 6. 支持ES6编译;
 7. 支持sass编译;
-8. 减少对工具的依赖
+8. 支持less编译;
+9. 减少对工具的依赖
 
 
 > ##重要更新
@@ -58,7 +60,7 @@ $ sudo npm install -g buijs
 ![buijs 创建工程预览](http://www.easybui.com/docs/images/router/buijs-create-demo_low.gif)
 
 
-### 3.1 创建默认Webapp工程
+### 3.1 创建默认Webapp工程, 新版的buijs会针对不同的node版本,创建不同的工程,但是默认不会主动创建sass的编译支持.
 
 ```bash
 
@@ -80,7 +82,18 @@ $ npm run dev
 $ npm run build
 
 ```
-**注意:** `npm run dev`使用这个命令样式的修改都需要在 `src/scss/style.scss` 文件,可以分模块引入,如果直接修改`src/css/style.css`,需要删除`src/scss`目录,避免style.css被覆盖.
+
+#### 3.1.1 如果需要工程对sass或者less支持
+
+在刚刚创建的demo工程里面再次执行以下命令
+```bash
+$ buijs create -p sass
+$ buijs create -p less
+```
+
+**注意:** `npm run dev`使用这个命令, 样式的修改都需要在 `src/scss/style.scss` 文件. 如果直接修改`src/css/style.css`,需要删除`src/scss`目录,避免style.css被覆盖.
+
+> 安装时, 如果报 sass 错误, 请先执行 `npm remove node-sass` 然后再安装依赖.
 
 > 如 github 下载缓慢, 可以使用新的命令 `buijs create -f gitee` 使用码云的下载源. buijs 需要更新到 0.6.6 以上才有.
 
@@ -237,6 +250,22 @@ $ buijs create -t sidebar -p dcloud
 
 ```
 
+### 创建sass编译工程
+
+```bash
+
+$ buijs create -p sass
+
+```
+
+### 创建less编译工程
+
+```bash
+
+$ buijs create -p less
+
+```
+
 ### 创建指定版本工程
 > 可以先查看有什么版本 `buijs list`
 
@@ -258,19 +287,32 @@ buijs update
 buijs update -p bingotouch
 ```
 
+### 创建多页工程
 
-### 更新工程为最新npm开发模式
+```bash
+buijs update -p pages
+```
+
+
+### 更新工程为最新npm开发模式 node10以上使用以下方式更新
 
 ```bash
 buijs update -d
 ```
+也可以指定更新对应的node版本
+```bash
+buijs update -d node8
+buijs update -d node8-sass
+buijs update -d node10
+buijs update -d node10-sass
+```
 
 ### 创建新模块
 
-模块的访问路径: 默认: `index.html#pages/article/article`
+模块的访问路径: 默认: `index.html#pages/article/index`
 
 ```bash
-buijs create -d article
+buijs create -m article
 ```
 
 
@@ -341,4 +383,12 @@ buijs create -f gitee
 
 # 创建一次以后,在没有新版本的时候, 创建其它模板, 无需再加入这个 `-f` from命令. 
 buijs create -t main-tab
+```
+
+## 十、创建完整案例参考
+
+```bash
+
+# 创建163案例
+buijs create -t case-163
 ```

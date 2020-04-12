@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
-var yargs = require("yargs");
-var chalk = require('chalk');
-var path = require("path");
-var fs = require("fs-extra");
-var decompress = require("decompress");
-var jsonfile = require('jsonfile');
-var request = require('request').defaults({
+const process = require("process");
+const yargs = require("yargs");
+const chalk = require('chalk');
+const path = require("path");
+const fs = require("fs-extra");
+const decompress = require("decompress");
+const jsonfile = require('jsonfile');
+const request = require('request').defaults({
     headers: {
         'User-Agent': 'node request' // GitHub ask for this.
     }
@@ -16,7 +17,8 @@ var confirm = require('prompt-confirm');
 
 const templateDirName = "templates";
 const platformDirName = "platforms";
-const devDirName = "dev";
+// 1.6.x 的工程改为
+const devDirName = "node";
 
 const infoLabel = chalk.inverse.green("INFO");
 const warningLabel = chalk.inverse("WARN");
@@ -249,8 +251,13 @@ function fetchRelease(version, cb, needRequest) {
  */
 function initProject(names, version, templateName, platformName, moduleName, repoName) {
     // 获得当前路径
-    var name = '';
-    var defaultNewModule = "page-newmodule"; // 默认新模块的名字
+    let name = '';
+
+    // 判断工程文件是否需要使用新版的
+    let nodeVersion = process.version.slice(1);
+    let hightVersion = parseFloat(nodeVersion) > 10;
+
+    let defaultNewModule = "page-newmodule"; // 默认新模块的名字
     if (names && names.includes('.')) {
         name = path.resolve('./');
         version = names;
@@ -321,7 +328,7 @@ function initProject(names, version, templateName, platformName, moduleName, rep
             let cachePath = path.join(name, "cache");
             // 项目模板文件夹路径 /demo/src/templates
             let templateDir = path.join(rootName, templateDirName);
-            // NPM 开发目录 /demo/src/dev
+            // NPM 开发目录 /demo/src/dev 新版为 /demo/src/node
             let devDir = path.join(rootName, devDirName);
             // 项目平台文件夹路径 /demo/src/platforms
             let platformDir = path.join(rootName, platformDirName);
@@ -399,18 +406,22 @@ function initProject(names, version, templateName, platformName, moduleName, rep
 
             }
             if (!hasJsFolder && !fs.existsSync(path.join(name, "package.json"))) {
-                let devCacheDir = path.join(cachePath, devDirName);
+                let devCacheDir = hightVersion ? path.join(cachePath, devDirName + "/node10") : path.join(cachePath, devDirName + "/node8");
                 // 初始化NPM模式
                 initDev(devCacheDir);
+
             }
             // 最后删除模板文件夹
             fs.removeSync(templateDir);
-            // 删除开发模式文件夹
+            // 删除开发模式node文件夹
             fs.removeSync(devDir);
+            // 删除旧版的dev文件夹
+            fs.removeSync(path.join(rootName, "dev"));
             // 最后删除平台文件夹
             fs.removeSync(platformDir);
             // 删除缓存
             fs.removeSync(cachePath);
+
             log("Project created done.");
 
 
@@ -448,6 +459,12 @@ function initProject(names, version, templateName, platformName, moduleName, rep
                 }
                 // 项目路径 /
                 fs.copySync(platformDirName, rootName);
+                // sass 平台对应不同的sass工程文件
+                if (platformName === "sass") {
+                    let devCacheDir = hightVersion ? path.join(cachePath, devDirName + "/node10-sass") : path.join(cachePath, devDirName + "/node8-sass");
+                    // 初始化NPM模式
+                    initDev(devCacheDir);
+                }
                 log("Copy platforms done.");
             }
 
@@ -612,6 +629,7 @@ function updateProject(names, version, platformName, devName, repoName) {
                 // 模板平台文件夹路径 /demo/cache/platforms/
                 let platformCacheDir = path.join(cachePath, platformDirName);
 
+
                 // 复制平台需要的文件
                 // /demo/cache/platforms/link
                 let platformNameCache = path.join(platformCacheDir, platformName);
@@ -628,9 +646,8 @@ function updateProject(names, version, platformName, devName, repoName) {
 
             // 更新npm 的包
             if (devName) {
-
-                // 模板平台文件夹路径 /demo/cache/dev/
-                let devCacheDir = path.join(cachePath, devDirName);
+                // 默认: 模板平台文件夹路径 /demo/cache/node/  如果有名称则是创建 /demo/cache/node/node10 之类的文件名
+                let devCacheDir = devName === true ? path.join(cachePath, devDirName + "/node10") : path.join(cachePath, devDirName + "/" + devName);
                 // 初始化NPM模式
                 initDev(devCacheDir);
 

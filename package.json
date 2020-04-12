@@ -1,6 +1,6 @@
 {
     "name": "buijs",
-    "version": "1.5.51",
+    "version": "1.6.01",
     "description": "buijs 用于快速构建BUI单页模板, 请仔细阅读说明文档. ",
     "main": "buijs-cli.js",
     "scripts": {},
@@ -28,6 +28,7 @@
         "decompress": "^4.2.0",
         "fs-extra": "^3.0.1",
         "jsonfile": "^3.0.0",
+        "process": "^0.11.10",
         "prompt-confirm": "^1.2.0",
         "request": "^2.81.0",
         "yargs": "^8.0.2"
