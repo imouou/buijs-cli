@@ -252,7 +252,7 @@ function fetchRelease(version, cb, needRequest) {
 function initProject(names, version, templateName, platformName, moduleName, repoName) {
     // 获得当前路径
     let name = '';
-
+    repoName = repoName || "gitee";
     // 判断工程文件是否需要使用新版的
     let nodeVersion = process.version.slice(1);
     let hightVersion = parseFloat(nodeVersion) > 10;
@@ -550,6 +550,7 @@ function clearCache() {
  */
 function updateProject(names, version, platformName, devName, repoName) {
     var name = '';
+    repoName = repoName || 'gitee';
     if (names && names.includes('.')) {
         name = path.resolve('./');
         version = names;
