@@ -291,7 +291,7 @@ buijs update -p bingotouch
 ### 创建多页工程
 
 ```bash
-buijs update -p pages
+buijs update -p mpa
 ```
 
 
@@ -393,3 +393,76 @@ buijs create -t main-tab
 # 创建163案例
 buijs create -t case-163
 ```
+
+
+## 十一、创建皮肤
+
+1. 创建主色皮肤
+
+> `npm run dev` 主色皮肤运行以后就会覆盖掉 原本的色系
+```bash
+
+# 先让你的文件支持sass
+buijs create -p sass
+
+# 创建一个红色皮肤, 在__variables.scss 文件里面通过 $main-color 修改为其它主色调, 会把头部等样式替换
+buijs create -p skin
+
+```
+
+2. 创建深夜模式皮肤
+
+> 深色皮肤跟主色皮肤的区别在于很多配色是相反的, 一般不需要修改, 运行以后,会在 css/bui-skindeep.css 生成样式文件,需要在 index.html 主动引入或者通过脚本控制切换.
+
+```bash
+
+# 先让你的文件支持sass
+buijs create -p sass
+
+# 创建一个深色皮肤
+buijs create -p skindeep
+```
+
+
+
+## 十二、疑难问题
+
+1. 保存代码不会自动更新？
+
+> 答：工程有使用 `npm run dev` 以后,会默认支持热更新, 工程只能在英文名路径下. 
+
+2. 找不到全局变量? 
+
+> 答: 在node10以上创建的新工程, 默认对es6编译更加友好, 但当执行了 `npm run build`命令以后, 这个编译把脚本变成了闭包, 工程原本的全局变量, 变成了局部变量, 公共脚本用`var`声明的全局变量都无法找到. 有4种解决办法, 
+  1. 最简单的方法是使用 window.xxx 来替代公共方法的 var 声明. 
+  2. 一开始就使用 loader.define 定义这个模块, 然后在每个模块需要用的时候引入, 这样就不会有这个问题了. 
+  3. 把文件命名为 `xxx.min.js` 就会跳过编译. 但这样就要求里面不能有es6的写法, 因为打包以后对es6支持不好. 
+  4. 1.6.2 新增了一个新的定义方式, 比较推荐.
+  > 4.1. common.js 使用这个方法构建全局方法
+  
+    ```js
+    loader.global(function(global){
+        // global: 为上次执行的依赖
+        return {
+            test: function(){
+                console.log("test");
+            },
+            test2: function(){
+                console.log("test2");
+            }
+        }
+    })
+    ```
+
+  >  4.2. 推荐: 局部调用
+    
+    ```js
+    loader.define(function(require,export,module,global){
+        // 调用test方法
+        global.test();
+
+    })
+    ```
+
+  > 4.3 全局调用: 
+    `loader.globals.test();`

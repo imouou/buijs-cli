@@ -52,7 +52,7 @@ var GITHUB_REPO = "https://api.github.com/repos/imouou/BUI-Template/releases";
 var GITEE_REPO = "https://gitee.com/api/v5/repos/imouou/BUI-Template/releases";
 // Gitee 下载, https://gitee.com/imouou/BUI-Template/repository/archive/1.5.14.zip
 
-var BUI_TEMPLATE_RELEASE_URL = GITHUB_REPO;
+var BUI_TEMPLATE_RELEASE_URL = GITEE_REPO;
 
 // toggle repo 数据源切换
 function toggleRepo(name) {
@@ -725,8 +725,10 @@ function emptyDir(fileUrl) {
 }
 
 // 获取版本列表
-function displayReleases() {
+function displayReleases(from) {
     log("Fetching version info...");
+    from = from || "gitee";
+    toggleRepo(from);
     request.get(BUI_TEMPLATE_RELEASE_URL, function(err, res, body) {
         if (err) error(err);
         if (res.statusCode != 200) error(`Failed to fetch releases info - ${res.statusCode}: ${res.body}`);
@@ -797,8 +799,14 @@ var args = yargs
     .command({
         command: "list",
         desc: "List available version of template releases.",
-        handler: function() {
-            displayReleases();
+        builder: (yargs) => {
+            yargs.option('from', {
+                alias: 'f',
+                describe: 'from repo.'
+            })
+        },
+        handler: function(argv) {
+            displayReleases(argv.from);
         }
     })
     .command({
