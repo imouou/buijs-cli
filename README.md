@@ -46,12 +46,12 @@ $ buijs create 1.4.8 -t page-login
 
 > 需要先安装 [node环境](https://nodejs.org/zh-cn/) 才能使用npm命令. 如果下载缓慢,建议先安装[淘宝的npm镜像](https://npm.taobao.org/), 把以下命令的`npm`换成`cnpm`;
 
-*windows:*
+*windows:* 需要右键使用管理员打开终端或者安装 `powershell`.
 ```bash
 npm install -g buijs
 ```
 
-*mac: 一般需要权限,需要加sudo,还要输入密码回车确认*
+*mac: 打开终端, 需要权限,加上sudo,还要输入密码回车确认*
 ```bash
 $ sudo npm install -g buijs
 ```
@@ -381,6 +381,7 @@ npm run build-project1
 ```bash
 # 从 gitee 的最新版本创建默认工程. 
 buijs create -f gitee
+buijs create -f github
 
 # 创建一次以后,在没有新版本的时候, 创建其它模板, 无需再加入这个 `-f` from命令. 
 buijs create -t main-tab
