@@ -437,6 +437,7 @@ function initProject(names, version, templateName, platformName, moduleName, rep
                     package.projects[name] = name + '/app.json';
                     package.scripts[`dev-${name}`] = `cross-env NODE_ENV=${name} gulp dev`;
                     package.scripts[`build-${name}`] = `cross-env NODE_ENV=${name} gulp build`;
+                    package.scripts[`package-${name}`] = `cross-env NODE_ENV=${name} gulp package`;
                     // 找到文件并同步修改
                     fs.writeFileSync(path.resolve(packageFile), JSON.stringify(package, null, 2));
                 } else {
@@ -444,6 +445,7 @@ function initProject(names, version, templateName, platformName, moduleName, rep
                     package.projects[name] = name + '/app.json';
                     package.scripts[`dev-${name}`] = `cross-env NODE_ENV=${name} gulp dev`;
                     package.scripts[`build-${name}`] = `cross-env NODE_ENV=${name} gulp build`;
+                    package.scripts[`package-${name}`] = `cross-env NODE_ENV=${name} gulp package`;
                     // 找到文件并同步修改
                     fs.writeFileSync(path.resolve(packageFile), JSON.stringify(package, null, 2));
                 }
@@ -462,6 +464,11 @@ function initProject(names, version, templateName, platformName, moduleName, rep
                 // sass 平台对应不同的sass工程文件
                 if (platformName === "sass") {
                     let devCacheDir = hightVersion ? path.join(cachePath, devDirName + "/node10-sass") : path.join(cachePath, devDirName + "/node8-sass");
+                    // 初始化NPM模式
+                    initDev(devCacheDir);
+                }
+                else if( platformName === "typescript" ){
+                    let devCacheDir = path.join(cachePath, devDirName + "/typescript");
                     // 初始化NPM模式
                     initDev(devCacheDir);
                 }
