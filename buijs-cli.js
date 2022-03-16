@@ -857,6 +857,41 @@ var args = yargs
             })
         }
     })
+    .command({
+        command: "opendoc [name]",
+        desc: "open a bui doc",
+        handler: function(argv) {
+            var open = require('open');
+
+            if( argv.name == "api"){
+                // 使用默认浏览器打开
+                open('http://imouou.gitee.io/easybui/demo/api/');
+            }else{
+                // 使用默认浏览器打开
+                open('http://imouou.gitee.io/easybui/docs/');
+            }
+        }
+    })
+    .command({
+        command: "openchrome",
+        desc: "open a chrome",
+        handler: function(argv) {
+            var open = require('open');
+            // var temppath = "";
+            // switch(process.platform){
+            //     case "win32":
+            //         temppath = "C:\ChromeDevUserData";
+            //     break;
+            //     default:
+            //         temppath = "/tmp/chrome_dev_test";
+            //         break;
+            // }
+            // 打开一个可以跨域的chrome，新版mac无法读写，容易造成收藏夹数据丢失，不默认使用
+            // open.openApp(open.apps.chrome, {arguments: ['--user-data-dir="'+temppath+'"','--disable-web-security','--allow-file-access-from-files']});
+            // 打开可以请求本地文件的chrome
+            open.openApp(open.apps.chrome, {arguments: ['--disable-web-security','--allow-file-access-from-files']});
+        }
+    })
     .version() // Use package.json's version
     .help()
     .alias({

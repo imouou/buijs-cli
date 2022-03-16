@@ -32,5 +32,8 @@
         "prompt-confirm": "^1.2.0",
         "request": "^2.81.0",
         "yargs": "^8.0.2"
+    },
+    "devDependencies": {
+        "open": "^8.4.0"
     }
 }

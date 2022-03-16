@@ -309,6 +309,18 @@ buijs update -d node10-sass
 buijs create -m article
 ```
 
+### 打开文档
+
+```bash
+buijs opendoc
+```
+
+### 打开API文档
+
+```bash
+buijs opendoc api
+```
+
 
 ## 七、目录说明:
 
