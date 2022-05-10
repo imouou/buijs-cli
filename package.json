@@ -1,39 +1,44 @@
 {
-    "name": "buijs",
-    "version": "1.7.00",
-    "description": "buijs 用于快速构建BUI单页模板, 请仔细阅读说明文档. ",
-    "main": "buijs-cli.js",
-    "scripts": {},
-    "author": "王伟深 <imouou@hotmail.com>",
-    "license": "Apache 2.0",
-    "bin": {
-        "buijs": "./buijs-cli.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/imouou/buijs-cli.git"
-    },
-    "keywords": [
-        "bui",
-        "bui-cli",
-        "buijs",
-        "buijs-cli"
-    ],
-    "bugs": {
-        "url": "https://github.com/imouou/buijs-cli/issues"
-    },
-    "homepage": "http://www.easybui.com",
-    "dependencies": {
-        "chalk": "^1.1.3",
-        "decompress": "^4.2.0",
-        "fs-extra": "^3.0.1",
-        "jsonfile": "^3.0.0",
-        "process": "^0.11.10",
-        "prompt-confirm": "^1.2.0",
-        "request": "^2.81.0",
-        "yargs": "^8.0.2"
-    },
-    "devDependencies": {
-        "open": "^8.4.0"
-    }
+  "name": "buijs",
+  "version": "1.7.21",
+  "description": "buijs 用于快速构建BUI单页模板, 请仔细阅读说明文档. ",
+  "main": "buijs-cli.js",
+  "scripts": {},
+  "author": "王小o <imouou@hotmail.com>",
+  "license": "Apache 2.0",
+  "bin": {
+    "buijs": "./buijs-cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imouou/buijs-cli.git"
+  },
+  "keywords": [
+    "bui",
+    "bui-cli",
+    "buijs",
+    "buijs-cli"
+  ],
+  "bugs": {
+    "url": "https://github.com/imouou/buijs-cli/issues"
+  },
+  "homepage": "http://www.easybui.com",
+  "dependencies": {
+    "chalk": "^1.1.3",
+    "cookie-parser": "^1.4.6",
+    "decompress": "^4.2.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.3",
+    "fs-extra": "^3.0.1",
+    "jsonfile": "^3.0.0",
+    "morgan": "^1.10.0",
+    "open": "^8.4.0",
+    "path": "^0.12.7",
+    "process": "^0.11.10",
+    "prompt-confirm": "^1.2.0",
+    "request": "^2.88.2",
+    "sqlite3": "^5.0.2",
+    "yargs": "^8.0.2"
+  },
+  "devDependencies": {}
 }

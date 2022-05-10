@@ -761,6 +761,62 @@ function getAvailableTemplateNames(projectPath, tplName) {
     return result;
 }
 
+
+// 压缩包
+const express = require('express');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+// const request = require('request');
+// const decompress = require('decompress');
+// 文件读取
+// const fs = require('fs-extra')
+
+function openui(argv){
+    
+var appserver = express();
+ 
+appserver.set('views', __dirname + '/www/views');
+appserver.set('view engine', 'ejs');
+
+
+//设置允许跨域访问该服务. 会导致html直接解析
+// appserver.all('*', function (req, res, next) {
+//     res.header('Access-Control-Allow-Origin', '*');
+//     res.header('Access-Control-Allow-Headers', 'Content-Type');
+//     res.header('Access-Control-Allow-Methods', '*');
+//     res.header('Content-Type', 'application/json;charset=utf-8');
+//     next();
+// });
+
+
+appserver.use(logger('dev'));
+appserver.use(express.json());
+// 解析post参数
+appserver.use(express.urlencoded({ extended: false }));
+appserver.use(cookieParser());
+appserver.use(express.static(path.join(__dirname, 'www/static')));
+
+// 首页
+var indexRouter = require('./www/routes/index');
+//
+var api = require('./www/api/index');
+
+appserver.use('/', indexRouter)
+ 
+// 下载页
+appserver.use('/api', api);
+ 
+var server = appserver.listen(argv.port||9001, function(){ 
+  var host = server.address().address
+  var port = server.address().port
+ 
+  console.log("应用实例，访问地址为 http://%s:%s", host, port)
+ 
+})
+
+
+}
+
 var args = yargs
     .command({
         command: "create [name] [version]",
@@ -890,6 +946,19 @@ var args = yargs
             // open.openApp(open.apps.chrome, {arguments: ['--user-data-dir="'+temppath+'"','--disable-web-security','--allow-file-access-from-files']});
             // 打开可以请求本地文件的chrome
             open.openApp(open.apps.chrome, {arguments: ['--disable-web-security','--allow-file-access-from-files']});
+        }
+    })
+    .command({
+        command: "ui [port]",
+        desc: "open bui template site.",
+        builder: (yargs) => {
+            yargs.option('port', {
+                alias: 'p',
+                describe: 'custom port.'
+            })
+        },
+        handler: function(argv) {
+            openui(argv);
         }
     })
     .version() // Use package.json's version
