@@ -46,6 +46,7 @@ const CACHE_TEMPLATE_PATH = path.join(CACHE_DIR_PATH, "template");
 const TMP_DOWNLOAD_PATH = path.join(CACHE_TEMPLATE_PATH, "download.zip");
 const RELEASES_JSON_PATH = path.join(CACHE_TEMPLATE_PATH, "release.json");
 const Author_JSON_PATH = path.join(CACHE_TEMPLATE_PATH, "author.json");
+const Record_JSON_PATH = path.join(CACHE_TEMPLATE_PATH, "record.json");
 
 // Github api
 const GITHUB_REPO = "https://api.github.com/repos/imouou/BUI-Template/releases";
@@ -95,6 +96,8 @@ function getReleaseUrl(tag) {
 
 // log(RELEASES_JSON_PATH)
 fs.ensureFileSync(RELEASES_JSON_PATH);
+
+fs.ensureFileSync(Record_JSON_PATH);
 
 try {
     var releasesInfo = jsonfile.readFileSync(RELEASES_JSON_PATH);
@@ -399,6 +402,127 @@ function fetchEasybuiRelease(version, cb, needRequest) {
 
     })
 
+}
+
+/**
+ * 获取远程组件模板
+ * @param {object} opt 
+ * @param {string} opt.id 远程模板的id
+ * @param {string} opt.name 本地的名字
+ * @param {string} opt.save 保存的路径
+ */
+function getComponent(opt) {
+
+    if (!opt.id) {
+        log("模板ID不能为空");
+        return;
+    }
+    let save = opt.save || `pages`;
+    let url = releaseDetailUrl + opt.id + "&token=" + opt.token;
+
+    // 获取组件模板
+    request(url, function (err, res, body) {
+
+        let info = JSON.parse(body);
+        let archiveInfo = info.data.archivesInfo || {};
+        let name = (opt.name || archiveInfo.compentname);
+        let idpath = `components/${opt.id}`;
+        let targetPath = path.join(CACHE_TEMPLATE_PATH, idpath);
+        let savePath = save ? save + "/" + name : "pages/" + name;
+
+        // info.data.archivesInfo
+        // 组件信息
+        let componentInfo = {
+            id: archiveInfo.id,
+            title: archiveInfo.title,
+            image: archiveInfo.image,
+            name: name,
+            path: idpath,
+            fullpath: targetPath
+        }
+        if (info.code == 0) {
+            log("访问失效已过期，请重新执行 buijs login 登录");
+            return;
+        }
+
+
+        let downloadUrls = archiveInfo["downloadurl"];
+
+        if (!downloadUrls.length) {
+            log("您可能没有该文档的下载权限，请从官网进入查看是否可以下载。");
+            return;
+        }
+
+        let downloadUrl = "";
+        for (let urlitem in downloadUrls) {
+            let localUrl = downloadUrls[urlitem]["url"];
+            if (localUrl) {
+                downloadUrl = localUrl;
+                break;
+            }
+        }
+
+        if (!downloadUrls) {
+            log("您可能没有该文档的下载权限，请从官网进入查看是否可以下载。");
+            return;
+        }
+
+        downloadCompentUnzip(downloadUrl, targetPath, savePath, function () {
+            var releasesInfo = null;
+            try {
+                releasesInfo = jsonfile.readFileSync(Record_JSON_PATH);
+            } catch (e) {
+                releasesInfo = {};
+            }
+            releasesInfo[componentInfo.id] = componentInfo;
+            // 下载记录
+            jsonfile.writeFileSync(Record_JSON_PATH, releasesInfo, { spaces: 2 });
+        });
+        return;
+        // 
+        addup({ id: archiveInfo.id });
+
+    })
+
+}
+
+/**
+ * 把 url (zipball_url) 的内容下载并解压到 savePath
+ * @param {string} url
+ * @param {string} savePath
+ * @param {Function} cb
+ */
+function downloadCompentUnzip(url, targetPath, savePath, cb) {
+    log("Trying to download...");
+    let file = fs.createWriteStream(TMP_DOWNLOAD_PATH);
+    file.on("close", function () {
+        log("Extracting...");
+        // decompress(TMP_DOWNLOAD_PATH, CACHE_TEMPLATE_PATH).then(function () {
+        decompress(TMP_DOWNLOAD_PATH, targetPath).then(function () {
+            log("Done extracting.");
+            let origPath = path.resolve(`./src/${savePath}`);;
+
+            fs.copySync(targetPath, origPath); // 重命名为指定名
+            fs.unlinkSync(TMP_DOWNLOAD_PATH); // 删除下载的压缩包
+            if (cb) cb();
+        })
+    }).on("error", function (err) {
+        console.log(err);
+    });
+
+    request.get(url)
+        .on("error", function (err) {
+            error(`Error downloading release: ${err}`);
+        })
+        .on("response", function (res) {
+            if (res.statusCode != 200) {
+                error("Get zipUrl return a non-200 response.");
+            }
+        })
+        .on("end", function () {
+            log("Download finished.");
+        })
+        .pipe(file);
 }
 
 var fetchMethod = {
@@ -1006,12 +1130,14 @@ function checkLogin() {
     if (fs.existsSync(Author_JSON_PATH)) {
         // 必须使用jsonfile写入跟读取才能转化成对象
         authorInfo = jsonfile.readFileSync(Author_JSON_PATH);
+
         try {
             authorInfo = JSON.parse(authorInfo);
-        } catch (e) { }
+        } catch (e) {
+        }
     }
 
-    return !!authorInfo.data.token;
+    return authorInfo.data.token;
 }
 
 var args = yargs
@@ -1073,7 +1199,7 @@ var args = yargs
         }
     })
     .command({
-        command: "get [id] [rename]",
+        command: "get [id] [name]",
         desc: "获取远程组件跟模板",
         builder: (yargs) => {
             yargs.option('save', {
@@ -1082,10 +1208,11 @@ var args = yargs
             })
         },
         handler: function (argv) {
-            var isLogin = checkLogin();
+            var token = checkLogin();
 
             // 第一步验证是否登录过，第二步验证token过期
-            if (isLogin) {
+            if (token) {
+                argv.token = token;
                 getComponent(argv);
             } else {
                 error("先执行 buijs login 进行登录, 如果没有账号，请从 https://www.easybui.com 免费注册.")
