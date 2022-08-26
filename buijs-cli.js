@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const process = require("process");
+const shell = require("shelljs");
 const yargs = require("yargs");
 const chalk = require('chalk');
 const path = require("path");
@@ -33,6 +34,7 @@ function error(msg) {
 }
 
 // -----------------配置---------start
+const currentVersion = "1.7.35";
 const templateDirName = "templates";
 const platformDirName = "platforms";
 // 1.6.x 的工程改为
@@ -59,7 +61,7 @@ const repoPath = 'https://www.easybui.com';
 // 版本列表
 const EASYBUI_REPO = repoPath + "/addons/cms/api.archives/index?page=1&channel=35";
 // 版本详情
-const releaseDetailUrl = repoPath + "/addons/cms/api.archives/detail?id=";
+const releaseDetailUrl = repoPath + "/addons/cms/api.archives/detail";
 // Gitee 下载, https://www.easybui.com/downloads/source/bui/bui_router_dev_latest.zip
 const releaseCountUrl = repoPath + "/addons/cms/archives/download.html"
 
@@ -75,17 +77,18 @@ function toggleRepo(name) {
 
     switch (name) {
         case "github":
-            BUI_TEMPLATE_RELEASE_URL = GITHUB_REPO;
-            log("change repo github", BUI_TEMPLATE_RELEASE_URL)
-            break;
+        // warn("由于Github国内连接不稳定，已不再支持")
+        // BUI_TEMPLATE_RELEASE_URL = GITHUB_REPO;
+        // log("change repo github", BUI_TEMPLATE_RELEASE_URL)
+        // break;
         case "gitee":
-            BUI_TEMPLATE_RELEASE_URL = GITEE_REPO;
-            log("change repo gitee", BUI_TEMPLATE_RELEASE_URL)
-            break;
+        // BUI_TEMPLATE_RELEASE_URL = GITEE_REPO;
+        // log("change repo gitee", BUI_TEMPLATE_RELEASE_URL)
+        // break;
         case "easybui":
         default:
             BUI_TEMPLATE_RELEASE_URL = EASYBUI_REPO;
-            log("change repo easybui", BUI_TEMPLATE_RELEASE_URL)
+            // log("change repo easybui", BUI_TEMPLATE_RELEASE_URL)
             break;
     }
 }
@@ -119,7 +122,8 @@ function getLastReleasePath() {
             return path.join(CACHE_TEMPLATE_PATH, f);
         }
     }
-    error("Cannot find last release path.");
+
+    error("版本的压缩包应该以 BUI-Template-版本号 命名 .");
 }
 
 /**
@@ -129,13 +133,14 @@ function getLastReleasePath() {
  * @param {Function} cb
  */
 function downloadAndUnzip(url, savePath, cb) {
-    log("Trying to download...");
+    log("开始下载...");
     let file = fs.createWriteStream(TMP_DOWNLOAD_PATH);
     file.on("close", function () {
-        log("Extracting...");
+        log("请稍候...");
         decompress(TMP_DOWNLOAD_PATH, CACHE_TEMPLATE_PATH).then(function () {
-            log("Done extracting.");
+            // log("处理完成.");
             let origPath = getLastReleasePath();
+
             fs.moveSync(origPath, savePath); // 重命名为指定名
             fs.unlinkSync(TMP_DOWNLOAD_PATH); // 删除下载的压缩包
             if (cb) cb();
@@ -154,118 +159,9 @@ function downloadAndUnzip(url, savePath, cb) {
             }
         })
         .on("end", function () {
-            log("Download finished.");
+            log("下载完成.");
         })
         .pipe(file);
-}
-
-/**
- * 获取指定版本的 release，首先尝试缓存（CACHE_TEMPLATE_PATH），再尝试下载
- * @param {string} version 指定版本，如果为空，表示最新版本
- * @param {Function} cb 通过该回调返回 release 的路径，一般形如 ~/.bui-weex/template/0.1.0
- */
-function fetchRelease(version, cb, needRequest) {
-    needRequest = needRequest === false ? false : true;
-    if (version) {
-        // Version specified, try cache.
-        let info = releasesInfo[version];
-        if (info) {
-            // Hit cache.
-            log("Cache hit.")
-            cb(path.join(CACHE_TEMPLATE_PATH, info.path));
-            return;
-        } else {
-            log("Cache miss.");
-        }
-    }
-
-    let url = getReleaseUrl(version);
-    log(`Fetching release: ${version ? version : "latest"}...`);
-    // last release 版本
-    let lasRelease = function (argument) {
-        // When fetch error, and no version specified, try to figure out the latest release.
-        var latestRleaseInfo = null;
-        for (let tag in releasesInfo) {
-            let info = releasesInfo[tag];
-            if (!latestRleaseInfo) {
-                latestRleaseInfo = info;
-            } else {
-                if (Date.parse(info.time) > Date.parse(latestRleaseInfo.time)) latestRleaseInfo = info;
-            }
-        }
-
-        return latestRleaseInfo;
-    }
-
-
-    if (!needRequest) {
-        // When fetch error, and no version specified, try to figure out the latest release.
-        let latestRleaseInfo = lasRelease();
-
-        if (latestRleaseInfo) {
-            // Figured out latest release in cache.
-            log(`Found latest release in cache: ${latestRleaseInfo.tag}.`)
-            cb(path.join(CACHE_TEMPLATE_PATH, latestRleaseInfo.path));
-            return;
-        } else {
-            log(`需要先创建工程以后,才能创建模块.`)
-        }
-        return;
-    }
-
-    // log(url)
-    request(url, function (err, res, body) {
-
-        if (err) {
-            // When fetch error, and no version specified, try to figure out the latest release.
-            let latestRleaseInfo = lasRelease();
-
-            if (latestRleaseInfo) {
-                // Figured out latest release in cache.
-                log(`Found latest release in cache: ${latestRleaseInfo.tag}.`)
-                cb(path.join(CACHE_TEMPLATE_PATH, latestRleaseInfo.path));
-                return;
-            }
-            error(err);
-        }
-        if (res.statusCode != 200) {
-            warn(`Failed to fetch ${url} - ${res.statusCode}: ${res.body}`);
-            if (!version) {
-                // When fetch error, and no version specified, try to figure out the latest release.
-                let latestRleaseInfo = lasRelease();
-
-                if (latestRleaseInfo) {
-                    // Figured out latest release in cache.
-                    log(`Found latest release in cache: ${latestRleaseInfo.tag}.`)
-                    cb(path.join(CACHE_TEMPLATE_PATH, latestRleaseInfo.path));
-                    return;
-                }
-            }
-            error(`Failed to fetch release of ${version ? version : "latest"}`);
-        }
-        // Successfully fetched info.
-        let info = JSON.parse(body);
-        let newInfo = {};
-        let tag = newInfo.tag = info["tag_name"];
-        newInfo.time = info["published_at"] || info["created_at"];
-        newInfo.path = newInfo.tag;
-        let targetPath = path.join(CACHE_TEMPLATE_PATH, newInfo.path);
-        if (fs.pathExistsSync(targetPath)) {
-            // Probably we are fetching latest release...
-            log(`Already cached release.`);
-            cb(targetPath);
-            return;
-        }
-        // github: obj[zipball_url]
-        // gitee: obj[assets][0][browser_download_url]
-        let downloadUrl = info.hasOwnProperty("zipball_url") ? info["zipball_url"] : info["assets"] && info["assets"][0] && info["assets"][0]["browser_download_url"] || "";
-        downloadAndUnzip(downloadUrl, targetPath, function () {
-            releasesInfo[tag] = newInfo;
-            jsonfile.writeFileSync(RELEASES_JSON_PATH, releasesInfo, { spaces: 2 });
-            cb(targetPath);
-            return;
-        });
-    })
 }
 
 /**
@@ -280,11 +176,11 @@ function fetchEasybuiRelease(version, cb, needRequest) {
         let info = releasesInfo[version];
         if (info) {
             // Hit cache.
-            log("Cache hit.")
+            log("从缓存创建.")
             cb(path.join(CACHE_TEMPLATE_PATH, info.path));
             return;
         } else {
-            log("Cache miss.");
+            log("没有缓存文件.");
         }
     }
 
@@ -303,7 +199,7 @@ function fetchEasybuiRelease(version, cb, needRequest) {
 
         return latestRleaseInfo;
     }
-    log(`Fetching release: ${version ? version : "latest"}...`);
+    // log(`获取版本: ${version ? version : "latest"}...`);
 
     if (!needRequest) {
         // When fetch error, and no version specified, try to figure out the latest release.
@@ -311,7 +207,7 @@ function fetchEasybuiRelease(version, cb, needRequest) {
 
         if (latestRleaseInfo) {
             // Figured out latest release in cache.
-            log(`Found latest release in cache: ${latestRleaseInfo.tag}.`)
+            log(`从缓存创建中, 请稍候...`)
             cb(path.join(CACHE_TEMPLATE_PATH, latestRleaseInfo.path));
             return;
         } else {
@@ -321,13 +217,13 @@ function fetchEasybuiRelease(version, cb, needRequest) {
     }
     // 获取所有版本列表
     request(EASYBUI_REPO, function (err, res, body) {
+        let latestRleaseInfo = lasRelease();
         if (err) {
             // When fetch error, and no version specified, try to figure out the latest release.
-            let latestRleaseInfo = lasRelease();
 
             if (latestRleaseInfo) {
                 // Figured out latest release in cache.
-                log(`Found latest release in cache: ${latestRleaseInfo.tag}.`)
+                log(`从缓存创建中, 请稍候...`)
                 cb(path.join(CACHE_TEMPLATE_PATH, latestRleaseInfo.path));
                 return;
             }
@@ -337,7 +233,6 @@ function fetchEasybuiRelease(version, cb, needRequest) {
             warn(`Failed to fetch ${url} - ${res.statusCode}: ${res.body}`);
             if (!version) {
                 // When fetch error, and no version specified, try to figure out the latest release.
-                let latestRleaseInfo = lasRelease();
 
                 if (latestRleaseInfo) {
                     // Figured out latest release in cache.
@@ -350,8 +245,13 @@ function fetchEasybuiRelease(version, cb, needRequest) {
         }
         // Successfully fetched info.
         let info = JSON.parse(body);
+
+        if (!info.data) {
+            error(`Failed to fetch release`);
+            return;
+        }
         // 最新的版本
-        let releaseInfo = info.data.pageList.data[0];
+        let releaseInfo = info.data ? info.data.pageList.data[0] : {};
         // info.data.pageList.data[]
 
         if (version) {
@@ -370,9 +270,9 @@ function fetchEasybuiRelease(version, cb, needRequest) {
         newInfo.path = newInfo.tag;
         newInfo.id = releaseInfo.id;
         let targetPath = path.join(CACHE_TEMPLATE_PATH, newInfo.path);
-        if (fs.pathExistsSync(targetPath)) {
+        if (fs.pathExistsSync(targetPath) && latestRleaseInfo.time >= newInfo.time) {
             // Probably we are fetching latest release...
-            log(`Already cached release.`);
+            log(`获取缓存, 请稍候...`);
             cb(targetPath);
 
             // 增加统计
@@ -405,30 +305,74 @@ function fetchEasybuiRelease(version, cb, needRequest) {
 }
 
 /**
- * 获取远程组件模板
+ * 获取远程组件模板 -s pages/
  * @param {object} opt 
  * @param {string} opt.id 远程模板的id
- * @param {string} opt.name 本地的名字
- * @param {string} opt.save 保存的路径
+ * @param {string} [opt.name] 本地的名字
+ * @param {string} [opt.save] 保存的路径 默认从 pages/
+ * @param {string} [opt.remote] 获取远程模板
  */
 function getComponent(opt) {
 
-    if (!opt.id) {
-        log("模板ID不能为空");
+    if (!fs.existsSync("package.json")) {
+        error("当前目录下没有package.json，您可能还没创建BUI工程，请通过 buijs create 构建.")
         return;
     }
-    let save = opt.save || `pages`;
-    let url = releaseDetailUrl + opt.id + "&token=" + opt.token;
+    if (!opt.id) {
+        log("模板ID 不能为空.");
+        return;
+    }
+    let save = opt.save ? `pages/` + opt.save : `pages`;
+    let url = releaseDetailUrl + "?id=" + opt.id + "&token=" + opt.token;
+    var releasesInfo = null;
+    try {
+        releasesInfo = jsonfile.readFileSync(Record_JSON_PATH);
+    } catch (e) {
+        releasesInfo = {};
+    }
+    let currentInfo = releasesInfo[opt.id];
+
+    // log("获取最新版本 ...");
+
+    // 从本地文件复制
+    function copyLocalFile(opt) {
+        let name = (opt.name || currentInfo.name || currentInfo.id);
+        let idpath = currentInfo.path;
+        let targetPath = path.join(CACHE_TEMPLATE_PATH, idpath);
+        let savePath = save + "/" + name;
+
+        let origPath = path.resolve(`./src/${savePath}`);;
+
+        fs.copySync(targetPath, origPath); // 重命名为指定名
+        // 统计
+        addup({ id: opt.id });
+    }
 
     // 获取组件模板
     request(url, function (err, res, body) {
+        try {
+            var info = JSON.parse(body);
+        } catch (e) {
+            warn("返回的数据格式错误")
+        }
 
-        let info = JSON.parse(body);
+        if (info.code == 0) {
+            switch (info.msg) {
+                case "请登录后再操作":
+                    warn(`${info.msg}，终端执行 buijs login `);
+                    break;
+                default:
+                    warn(info.msg);
+                    break;
+            }
+            return;
+        }
+
         let archiveInfo = info.data.archivesInfo || {};
-        let name = (opt.name || archiveInfo.compentname);
+        let name = (opt.name || archiveInfo.compentname || archiveInfo.id);
         let idpath = `components/${opt.id}`;
         let targetPath = path.join(CACHE_TEMPLATE_PATH, idpath);
-        let savePath = save ? save + "/" + name : "pages/" + name;
+        let savePath = save + "/" + name;
 
         // info.data.archivesInfo
         // 组件信息
@@ -438,18 +382,19 @@ function getComponent(opt) {
             image: archiveInfo.image,
             name: name,
             path: idpath,
-            fullpath: targetPath
+            fullpath: targetPath,
+            publishtime: archiveInfo.publishtime
         }
-        if (info.code == 0) {
-            log("访问失效已过期，请重新执行 buijs login 登录");
+
+        if (archiveInfo.channel_id != "13" && archiveInfo.channel_id != "12" && archiveInfo.channel_id != "29") {
+            error("仅支持组件及模板的下载");
             return;
         }
 
-
-        let downloadUrls = archiveInfo["downloadurl"];
+        let downloadUrls = archiveInfo["downloadurl"] || [];
 
         if (!downloadUrls.length) {
-            log("您可能没有该文档的下载权限，请从官网进入查看是否可以下载。");
+            log("您可能没有该文档的下载权限，请从 www.easybui.com 官网进入查看是否可以下载。");
             return;
         }
 
@@ -463,28 +408,76 @@ function getComponent(opt) {
         }
 
         if (!downloadUrls) {
-            log("您可能没有该文档的下载权限，请从官网进入查看是否可以下载。");
+            log("您可能没有该文档的下载权限，请从 www.easybui.com 官网进入查看是否可以下载。");
             return;
         }
 
+
+        // 如果有本地文件，且发布时间没有改变，不需要重新下载，减少服务器负担
+        if (!opt.remote && currentInfo && currentInfo.publishtime >= componentInfo.publishtime) {
+            log("从缓存创建 ...");
+
+            copyLocalFile(opt);
+
+            log(`创建完成，预览地址: http://localhost:port/#${savePath}/index`);
+
+            return;
+        }
+
+        // 重新下载更新
         downloadCompentUnzip(downloadUrl, targetPath, savePath, function () {
-            var releasesInfo = null;
-            try {
-                releasesInfo = jsonfile.readFileSync(Record_JSON_PATH);
-            } catch (e) {
-                releasesInfo = {};
-            }
+
             releasesInfo[componentInfo.id] = componentInfo;
             // 下载记录
             jsonfile.writeFileSync(Record_JSON_PATH, releasesInfo, { spaces: 2 });
+
+            log(`创建完成，预览地址: http://localhost:port/#${savePath}/index`);
+
         });
-        return;
-        // 
+
+        // 统计
         addup({ id: archiveInfo.id });
 
     })
 
 }
+
+// 获取版本更新提醒
+function getCliVersion(opt) {
+
+    let url = releaseDetailUrl + "?id=" + opt.id;
+
+    // 获取组件模板
+    request(url, function (err, res, body) {
+        try {
+            var info = JSON.parse(body);
+        } catch (e) {
+            warn("返回的数据格式错误")
+        }
+
+        if (info.code == 0) {
+            switch (info.msg) {
+                case "请登录后再操作":
+                    warn(`${info.msg}，终端执行 buijs login `);
+                    break;
+                default:
+                    warn(info.msg);
+                    break;
+            }
+            return;
+        }
+
+        let archiveInfo = info.data.archivesInfo || {};
+        let remoteVersion = String(archiveInfo.version).replace(/\./g, "");
+        let currentV = String(currentVersion).replace(/\./g, "");
+
+        if (parseInt(remoteVersion) > parseInt(currentV)) {
+            warn(`buijs cli有新版: ${archiveInfo.version}，执行 npm i -g buijs 更新`);
+        }
+
+    })
+}
+
 
 /**
  * 把 url (zipball_url) 的内容下载并解压到 savePath
@@ -493,13 +486,13 @@ function getComponent(opt) {
  * @param {Function} cb
  */
 function downloadCompentUnzip(url, targetPath, savePath, cb) {
-    log("Trying to download...");
+    log("开始下载...");
     let file = fs.createWriteStream(TMP_DOWNLOAD_PATH);
     file.on("close", function () {
-        log("Extracting...");
+        log("请稍候...");
         // decompress(TMP_DOWNLOAD_PATH, CACHE_TEMPLATE_PATH).then(function () {
         decompress(TMP_DOWNLOAD_PATH, targetPath).then(function () {
-            log("Done extracting.");
+            // log("处理完成.");
             let origPath = path.resolve(`./src/${savePath}`);;
 
             fs.copySync(targetPath, origPath); // 重命名为指定名
@@ -520,13 +513,12 @@ function downloadCompentUnzip(url, targetPath, savePath, cb) {
             }
         })
         .on("end", function () {
-            log("Download finished.");
+            log("下载完成.");
         })
         .pipe(file);
 }
 
 var fetchMethod = {
-    fetchRelease: fetchRelease,
     fetchEasybuiRelease: fetchEasybuiRelease
 }
 
@@ -540,6 +532,27 @@ function addup(opt) {
     }, function (err, httpResponse, body) {
 
     })
+}
+
+// 自动安装提醒
+function autoInstall(name) {
+    let command = name ? `cd ${name} && npm i && npm run dev` : `npm i && npm run dev`;
+    log(`创建工程完成，执行 ${command} 命令预览工程.`);
+    warn("如果安装依赖报错，请先设置淘宝源 npm config set registry https://registry.npmmirror.com ")
+
+    var prompt = new confirm('要自动安装依赖并且打开预览吗?');
+    prompt.ask(function (answer) {
+        if (!answer) {
+            return;
+        } else {
+            log(`需要耗费几分钟时间，请耐心等待.`);
+            // Run external tool synchronously
+            if (shell.exec(command).code !== 0) {
+                shell.echo('尝试先设置淘宝源 npm config set registry https://registry.npmmirror.com ');
+                shell.exit(1);
+            }
+        }
+    });
 }
 /**
  * 复制 template 文件以创建 bui 工程.
@@ -565,9 +578,9 @@ function initProject(names, version, templateName, platformName, moduleName, rep
         name = names || path.resolve('./');
         version = version;
     }
-    if (repoName) {
-        toggleRepo(repoName);
-    }
+    // if (repoName) {
+    //     toggleRepo(repoName);
+    // }
 
     let jsDir = path.join(name, "js");
     let pagesDir = path.join(name, "pages");
@@ -584,7 +597,7 @@ function initProject(names, version, templateName, platformName, moduleName, rep
     let isExistProject = false;
     // 先检测有没有相同模板
     if (hasTplName) {
-        var prompt = new confirm('The Template already exists in the project. Press "Enter" to overwrite.');
+        var prompt = new confirm('模板已存在，要覆盖吗？继续请按回车键');
         prompt.ask(function (answer) {
             if (!answer) {
                 return;
@@ -618,12 +631,22 @@ function initProject(names, version, templateName, platformName, moduleName, rep
 
     // 创建工程
     function createProject() {
-        log("Creating project...");
+
+        var typename = "工程";
+        if (templateName) {
+            typename = "模板";
+        } else if (platformName) {
+            typename = "平台";
+        } else if (moduleName) {
+            typename = "组件";
+        }
+        log(`开始创建${typename}`);
 
         // 创建模块名的时候无需请求
         let needRequest = moduleName ? false : true;
         // 获取bui版本，操作方式跟github不一样
-        var fetchRepo = repoName && repoName !== 'easybui' ? fetchMethod["fetchRelease"] : fetchMethod["fetchEasybuiRelease"];
+        // var fetchRepo = repoName && repoName == 'easybui' ? fetchMethod["fetchEasybuiRelease"] : fetchMethod["fetchRelease"];
+        var fetchRepo = fetchMethod["fetchEasybuiRelease"];
 
         fetchRepo(version, function (releasePath) {
             // 工程缓存路径 /demo/cache
@@ -635,7 +658,7 @@ function initProject(names, version, templateName, platformName, moduleName, rep
             // 项目平台文件夹路径 /demo/src/platforms
             let platformDir = path.join(rootName, platformDirName);
 
-            log("Copying default template file...");
+            // log("Copying default template file...");
             // 复制文件到项目的cache目录
             fs.copySync(releasePath, cachePath);
             // 再从cache复制到根目录,防止多次创建覆盖
@@ -675,7 +698,7 @@ function initProject(names, version, templateName, platformName, moduleName, rep
                         error("template " + templateName + " is not exist");
                         // return;
                     }
-                    log("Copying template file.");
+                    // log("Copying template file.");
                     initTemplate(templateNameCache);
                 }
                 if (moduleName) {
@@ -688,7 +711,7 @@ function initProject(names, version, templateName, platformName, moduleName, rep
                         error("template " + templateName + " is not exist");
                         // return;
                     }
-                    log("Copying template file.");
+                    // log("Copying template file.");
                     initTemplate(templateNameCache);
                     // 重命名新模块
                     moduleName && renameModule(moduleName);
@@ -703,13 +726,14 @@ function initProject(names, version, templateName, platformName, moduleName, rep
                         error("platform " + platformName + " is not exist");
                         // return;
                     }
-                    log("Copying platform file.");
+                    // log("Copying platform file.");
                     initPlatform(platformNameCache);
                 }
 
             }
             if (!hasJsFolder && !fs.existsSync(path.join(name, "package.json"))) {
                 let devCacheDir = hightVersion ? path.join(cachePath, devDirName + "/node10") : path.join(cachePath, devDirName + "/node8");
+
                 // 初始化NPM模式
                 initDev(devCacheDir);
 
@@ -725,12 +749,15 @@ function initProject(names, version, templateName, platformName, moduleName, rep
             // 删除缓存
             fs.removeSync(cachePath);
 
-            log("Project created done.");
-
+            if (typename == "工程" || typename == "平台") {
+                autoInstall(name);
+            } else {
+                log(`创建${typename}完成.`);
+            }
 
             // 写入package配置多工程名
             function modifyPackage(name) {
-                log("modify package.json");
+                // log("modify package.json");
                 // 获取根目录下的package.json
                 var packageFile = path.join(path.resolve('./'), 'package.json');
                 var package = require(packageFile);
@@ -756,7 +783,7 @@ function initProject(names, version, templateName, platformName, moduleName, rep
             }
             // 初始化平台
             function initPlatform(platformDirName) {
-                log("Initing platform...");
+                // log("Initing platform...");
                 // 平台路径 /cache/platforms/link
                 if (!fs.existsSync(platformDirName)) {
                     warn(`Platform not exist. Using default platform webapp.`);
@@ -775,7 +802,7 @@ function initProject(names, version, templateName, platformName, moduleName, rep
                     // 初始化NPM模式
                     initDev(devCacheDir);
                 }
-                log("Copy platforms done.");
+                // log("Copy platforms done.");
             }
 
             // 修改模块名字
@@ -800,21 +827,21 @@ function initProject(names, version, templateName, platformName, moduleName, rep
             }
             // 初始化模板
             function initTemplate(templateDirName) {
-                log("Initing template...");
+                log("创建模板中...");
                 // 模板路径 /cache/templates/main-tab
                 if (!fs.existsSync(templateDirName)) {
-                    warn(`Template not exist. Using default Template.`);
+                    warn(`模板不存在，请检查后重试`);
                     return;
                 }
                 // 项目路径 /
                 fs.copySync(templateDirName, rootName);
-                log("Copy template done.");
+                // log("模板创建完成.");
             }
             // 初始化开发模式到根路径
             function initDev(devsDirName) {
                 // 项目路径 /
                 fs.copySync(devsDirName, name);
-                log("Copy Dev done.");
+                // log("Copy Dev done.");
             }
         }, needRequest);
 
@@ -851,9 +878,9 @@ function updateProject(names, version, platformName, devName, repoName) {
         version = version;
     }
 
-    if (repoName) {
-        toggleRepo(repoName);
-    }
+    // if (repoName) {
+    //     toggleRepo(repoName);
+    // }
 
     // 通过判断当前目录下是否有
     let hasJsFolder = fs.existsSync(path.join(name, "js")) || fs.existsSync(path.join(name, "pages"));
@@ -867,26 +894,27 @@ function updateProject(names, version, platformName, devName, repoName) {
     function checkProjectIsExist() {
         // 如果存在js目录
         if (hasJsFolder || fs.existsSync("src")) {
-            warn(`Project already exist.`);
-            var prompt = new confirm('Do you Want to overwrite the project  ?');
+            warn(`已经存在一个工程.`);
+            var prompt = new confirm('是否覆盖工程，继续请按回车键?');
             prompt.ask(function (answer) {
                 if (!answer) {
                     // error(`File already exist.`);
                     return;
                 } else {
-                    log("Overwrite project...");
+                    // log("Overwrite project...");
                     createProject();
                 }
             });
             return;
         }
-        log("Updateing project...");
+        log("开始更新工程...");
         createProject();
     }
     // 创建工程
     function createProject() {
         // 获取bui版本，操作方式跟github不一样
-        var fetchRepo = repoName && repoName == 'easybui' ? fetchMethod["fetchEasybuiRelease"] : fetchMethod["fetchRelease"];
+        // var fetchRepo = repoName && repoName == 'easybui' ? fetchMethod["fetchEasybuiRelease"] : fetchMethod["fetchRelease"];
+        var fetchRepo = fetchMethod["fetchEasybuiRelease"];
 
         fetchRepo(version, function (releasePath) {
             // 工程缓存路径 /demo/cache
@@ -1022,14 +1050,16 @@ function emptyDir(fileUrl) {
 function displayReleases(from) {
     log("Fetching version info...");
     from = from || "easybui";
-    toggleRepo(from);
+    // toggleRepo(from);
     request.get(BUI_TEMPLATE_RELEASE_URL, function (err, res, body) {
         if (err) error(err);
         if (res.statusCode != 200) error(`Failed to fetch releases info - ${res.statusCode}: ${res.body}`);
         let alltags = JSON.parse(body);
-        let whichTags = from == "easybui" ? alltags.data.pageList.data : alltags;
-        let tags = whichTags.map(function (e) { return from == "easybui" ? e["version"] : e["tag_name"] });
-        console.log("Available versions:")
+        // let whichTags = from == "easybui" ? alltags.data.pageList.data : alltags;
+        let whichTags = alltags.data.pageList.data;
+        // let tags = whichTags.map(function (e) { return from == "easybui" ? e["version"] : e["tag_name"] });
+        let tags = whichTags.map(function (e) { return e["version"] });
+        log("Available versions:")
         tags.forEach(t => {
             console.log(chalk.green.underline(t));
         })
@@ -1053,7 +1083,7 @@ function getAvailableTemplateNames(projectPath, tplName) {
 
 // 登录
 function login(name) {
-    log("login easybui.com");
+    // log("login easybui.com");
 
     var schema = {
     };
@@ -1071,7 +1101,7 @@ function login(name) {
                 }
             }
         };
-        log("请输入账号密码");
+        log("请输入账号密码，按回车键提交");
     } else {
         schema = {
             properties: {
@@ -1081,7 +1111,7 @@ function login(name) {
                 }
             }
         };
-        log("请输入密码");
+        log("请输入密码，按回车键提交");
     }
 
 
@@ -1109,9 +1139,9 @@ function login(name) {
 
 // 注销
 function logout(name) {
-    log("您确定要注销登录吗？");
+    // log("您确定要注销登录吗？");
 
-    var prompt = new confirm('Are you sure you want to log out?');
+    var prompt = new confirm('确定要注销吗?');
     prompt.ask(function (answer) {
         if (!answer) {
             return;
@@ -1142,15 +1172,29 @@ function checkLogin() {
 
 var args = yargs
     .command({
+        command: "login [name] [password]",
+        desc: "登录网站，如果没有账号密码，可以从 easybui.com 免费注册。If you don't know the account password, you can register for free from easybui.com ",
+        handler: function (argv) {
+            login(argv.name, argv.password);
+        }
+    })
+    .command({
+        command: "logout",
+        desc: "注销登录 ",
+        handler: function (argv) {
+            logout();
+        }
+    })
+    .command({
         command: "create [name] [version]",
         desc: "创建BUI的脚手架工程. 参数: name:工程名, version: bui版本. Create scaffolding project for BUI. Parameters: name: project name, version: bui version.",
         builder: (yargs) => {
             yargs.option('template', {
                 alias: 't',
-                describe: '使用某个模板构建. build using a template.'
+                describe: '使用某个模板创建. build using a template.'
             }).option('platform', {
                 alias: 'p',
-                describe: '使用某个平台工程构建. Build with a platform project.'
+                describe: '使用某个平台工程创建. Build with a platform project.'
             }).option('module', {
                 alias: 'm',
                 describe: '创建新模块. Create new module'
@@ -1160,6 +1204,12 @@ var args = yargs
             })
         },
         handler: function (argv) {
+
+            // 获取cli是否有最新版本
+            getCliVersion({
+                id: "267"
+            });
+
             var isLogin = checkLogin();
 
             // 第一步验证是否登录过，第二步验证token过期
@@ -1205,9 +1255,13 @@ var args = yargs
             yargs.option('save', {
                 alias: 's',
                 describe: '保存本地路径 默认 pages/.'
+            }).option('remote', {
+                alias: 'r',
+                describe: '获取远程模板'
             })
         },
         handler: function (argv) {
+
             var token = checkLogin();
 
             // 第一步验证是否登录过，第二步验证token过期
@@ -1217,20 +1271,6 @@ var args = yargs
             } else {
                 error("先执行 buijs login 进行登录, 如果没有账号，请从 https://www.easybui.com 免费注册.")
             }
-        }
-    })
-    .command({
-        command: "login [name] [password]",
-        desc: "登录网站，如果没有账号密码，可以从 easybui.com 免费注册。If you don't know the account password, you can register for free from easybui.com ",
-        handler: function (argv) {
-            login(argv.name, argv.password);
-        }
-    })
-    .command({
-        command: "logout",
-        desc: "注销登录 ",
-        handler: function (argv) {
-            logout();
         }
     })
     .command({
@@ -1287,9 +1327,9 @@ var args = yargs
         handler: function (argv) {
             var open = require('open');
 
-            if (argv.name == "api") {
+            if (argv.name == "component") {
                 // 使用默认浏览器打开
-                open('https://www.easybui.com/p/api.html');
+                open('https://www.easybui.com/p/component.html');
             } else {
                 // 使用默认浏览器打开
                 open('https://www.easybui.com/p/doc.html');
@@ -1297,28 +1337,18 @@ var args = yargs
         }
     })
     .command({
-        command: "openchrome",
-        desc: "打开谷歌浏览器. open a chrome",
+        command: "openapi",
+        desc: "buijs opendoc 打开入门文档，buijs opendoc api 打开api文档",
         handler: function (argv) {
             var open = require('open');
-            // var temppath = "";
-            // switch(process.platform){
-            //     case "win32":
-            //         temppath = "C:\ChromeDevUserData";
-            //     break;
-            //     default:
-            //         temppath = "/tmp/chrome_dev_test";
-            //         break;
-            // }
-            // 打开一个可以跨域的chrome，新版mac无法读写，容易造成收藏夹数据丢失，不默认使用
-            // open.openApp(open.apps.chrome, {arguments: ['--user-data-dir="'+temppath+'"','--disable-web-security','--allow-file-access-from-files']});
-            // 打开可以请求本地文件的chrome
-            open.openApp(open.apps.chrome, { arguments: ['--disable-web-security', '--allow-file-access-from-files'] });
+
+            // 使用默认浏览器打开
+            open('https://www.easybui.com/p/api.html');
         }
     })
     .command({
         command: "clear",
-        desc: "清除构建缓存. clear cache.",
+        desc: "清除创建缓存. clear cache.",
         handler: function () {
             clearCache();
         }
@@ -1327,10 +1357,9 @@ var args = yargs
     .help()
     .alias({
         "h": "help",
-        "v": "version",
-        "p": "platform",
-        "t": "template"
+        "v": "version"
     })
     .strict(true)
     .demandCommand()
+    .epilogue('buijs cli 当前版本：' + currentVersion)
     .argv;

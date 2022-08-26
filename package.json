@@ -1,7 +1,7 @@
 {
   "name": "buijs",
-  "version": "1.7.21",
-  "description": "buijs 用于快速构建BUI单页模板, 请仔细阅读说明文档. ",
+  "version": "1.7.35",
+  "description": "buijs cli 是用于快速构建BUI工程及模板的命令集, 请仔细阅读说明文档. ",
   "main": "buijs-cli.js",
   "scripts": {},
   "author": "王小o <imouou@hotmail.com>",
@@ -25,19 +25,16 @@
   "homepage": "http://www.easybui.com",
   "dependencies": {
     "chalk": "^1.1.3",
-    "cookie-parser": "^1.4.6",
-    "decompress": "^4.2.0",
-    "ejs": "^3.1.6",
-    "express": "^4.17.3",
+    "decompress": "^4.2.1",
     "fs-extra": "^3.0.1",
-    "jsonfile": "^3.0.0",
+    "jsonfile": "^6.0.0",
     "open": "^8.4.0",
     "path": "^0.12.7",
     "process": "^0.11.10",
     "prompt": "^1.3.0",
-    "prompt-confirm": "^1.2.0",
+    "prompt-confirm": "^2.0.0",
     "request": "^2.88.2",
-    "sqlite3": "^5.0.2",
+    "shelljs": "^0.8.5",
     "yargs": "^8.0.2"
   },
   "devDependencies": {}
