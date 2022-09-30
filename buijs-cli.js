@@ -1127,10 +1127,20 @@ function login(name) {
         }, function (err, res, body) {
             if (err) error(err);
 
-            // 保存用户信息
-            jsonfile.writeFileSync(Author_JSON_PATH, body, { spaces: 2 });
+            try {
+                var result = JSON.parse(body);
+            } catch (e) {
+            }
 
-            log("登录成功")
+            if (result.code) {
+
+                // 保存用户信息
+                jsonfile.writeFileSync(Author_JSON_PATH, body, { spaces: 2 });
+
+                log("登录成功")
+            } else {
+                log(result.msg)
+            }
 
         });
     });

@@ -1,6 +1,6 @@
 {
   "name": "buijs",
-  "version": "1.7.35",
+  "version": "1.7.43",
   "description": "buijs cli 是用于快速构建BUI工程及模板的命令集, 请仔细阅读说明文档. ",
   "main": "buijs-cli.js",
   "scripts": {},
