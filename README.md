@@ -1,28 +1,35 @@
 # buijs 命令行工具
 
 
-| **描述**            | **修改日期**    |
-|:-------------------|-------------------:|
-|新增update命令,修复update平台时,会覆盖index.html,index.js问题    |2018-2-1    |
-|新增NPM开发模式,修改了目录规范,修复无网络无法创建问题    |2018-3-25    |
-|新增buijs update -d 更新工程gulpfile.js package.json app.json    |2018-4-12    |
-|修复buijs create 不能在同个工程下创建子工程    |2018-5-30    |
-|新增对相同模板目录的检测,避免重复覆盖    |2018-8-01    |
-|修复输入版本号前必须输入工程名    |2018-10-31    |
-|新增多工程共享 node_modules目录    |2018-12-07    |
-|新增创建新模块命令 buijs create -m 模块名    |2019-01-22    |
-|新增更改数据源命令, 默认是 github.  buijs create -f gitee     |2019-03-20    |
-|完善创建新模块命令,需要结合最新的 buijs 及 bui-template 使用     |2019-08-26    |
-|新增对工程的node不同版本的区分     |2020-04-01    |
-|更新默认的源为 gitee 国内会快很多     |2020-04-13    |
-|更新bui为1.7.0版本     |2022-03-01    |
-|更新为bui官网数据源     |2022-08-24    |
+| **描述**                                                      | **修改日期** |
+| :------------------------------------------------------------ | -----------: |
+| 新增update命令,修复update平台时,会覆盖index.html,index.js问题 |     2018-2-1 |
+| 新增NPM开发模式,修改了目录规范,修复无网络无法创建问题         |    2018-3-25 |
+| 新增buijs update -d 更新工程gulpfile.js package.json app.json |    2018-4-12 |
+| 修复buijs create 不能在同个工程下创建子工程                   |    2018-5-30 |
+| 新增对相同模板目录的检测,避免重复覆盖                         |    2018-8-01 |
+| 修复输入版本号前必须输入工程名                                |   2018-10-31 |
+| 新增多工程共享 node_modules目录                               |   2018-12-07 |
+| 新增创建新模块命令 buijs create -m 模块名                     |   2019-01-22 |
+| 新增更改数据源命令, 默认是 github.  buijs create -f gitee     |   2019-03-20 |
+| 完善创建新模块命令,需要结合最新的 buijs 及 bui-template 使用  |   2019-08-26 |
+| 新增对工程的node不同版本的区分                                |   2020-04-01 |
+| 更新默认的源为 gitee 国内会快很多                             |   2020-04-13 |
+| 更新bui为1.7.0版本                                            |   2022-03-01 |
+| 更新为bui官网数据源                                           |   2022-08-24 |
+| 优化获取官方远程模板组件                                      |   2022-09-10 |
+| 优化创建缓存                                                  |   2022-10-08 |
+| 优化node16版本                                                |     2023-6-2 |
 
 ## 重要说明
 
-重大更新，由于 github,gitee 的资源不稳定，数据源迁回 easybui.com 官网，请重新执行 `npm install -g buijs` 安装命令。
+重大更新，由于 github,gitee 的资源不稳定，数据源迁回 easybui.com 官网，请重新执行 `npm install -g buijs` 安装命令， 版本要大于 1.7.51。
 
 官网资源第一次需要登录，请先执行 `buijs login` ，账号密码，如无账号，请先从 easybui.com 注册。
+
+另外，模板包里的模板及案例会逐渐减少，模板均已放在网站资源里，更容易找到也较容易维护。
+
+> buijs CLI的部分功能跟 [百搭-可视化构建开发工具](https://www.npmjs.com/package/baida) 重叠，我们要打造资源开发一体化，迅速集成，减少各种配置跟依赖的安装，欢迎关注 `bui神速` 订阅号，以获取最新的官方渠道消息。
 
 
 ## 一、简介
@@ -167,27 +174,27 @@ bui.ajax({
 
 ### buijs 命令列表
 
-| **命令行**   | **描述**           |
-|:------------- |:-------------------|
-| `buijs -v`       |查看当前工具的版本    |
-| `buijs -h`       |命令帮助信息    |
-| `buijs create `  |在当前目录创建bui webapp默认工程    |
-| `buijs create [projectName] [version] [-t templateName] [-p platformName] [-m moduleName]`       |创建工程,支持指定版本,指定模板,指定平台,相同目录下会覆盖    |
-| `buijs update` | 在当前项目更新 bui为最新webapp版本,只修改bui.css,bui.js不覆盖项目其它内容    |
-| `buijs update [projectName] [version] [-p platformName] [-d dev]` | 更新bui为某个版本,某个平台, -d 更新为最新的工程模式(dev)    |
-| `buijs list`       |显示可用的版本    |
-| `buijs list-template`  废弃     |显示可用的模板列表 [BUI模板图片预览](https://easybui.com/products/268.html)    |
-| `buijs list-platform`       |显示可用的平台列表    |
-| `buijs clear`       |清除下载的模板缓存    |
-| `buijs create -m 模块名 `      | 创建新的模块  m = module  |
-| `buijs get id [name]`  新     | 创建新的模板，ID，为官网模板或组件的id，例如 https://easybui.com/components/237.html ， buijs get 237 会把这个组件下载到 pages/ 目录下，buijs get 237 -s components 指定保存到目录为 pages/components ，buijs get 237 dateselect 重新指定组件名为dateselect |
+| **命令行**                                                                                 | **描述**                                                                                                                                                                                                                                                    |
+| :----------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `buijs -v`                                                                                 | 查看当前工具的版本                                                                                                                                                                                                                                          |
+| `buijs -h`                                                                                 | 命令帮助信息                                                                                                                                                                                                                                                |
+| `buijs create `                                                                            | 在当前目录创建bui webapp默认工程                                                                                                                                                                                                                            |
+| `buijs create [projectName] [version] [-t templateName] [-p platformName] [-m moduleName]` | 创建工程,支持指定版本,指定模板,指定平台,相同目录下会覆盖                                                                                                                                                                                                    |
+| `buijs update`                                                                             | 在当前项目更新 bui为最新webapp版本,只修改bui.css,bui.js不覆盖项目其它内容                                                                                                                                                                                   |
+| `buijs update [projectName] [version] [-p platformName] [-d dev]`                          | 更新bui为某个版本,某个平台, -d 更新为最新的工程模式(dev)                                                                                                                                                                                                    |
+| `buijs list`                                                                               | 显示可用的版本                                                                                                                                                                                                                                              |
+| `buijs list-template`  废弃                                                                | 显示可用的模板列表 [BUI模板图片预览](https://easybui.com/products/268.html)                                                                                                                                                                                 |
+| `buijs list-platform`                                                                      | 显示可用的平台列表                                                                                                                                                                                                                                          |
+| `buijs clear`                                                                              | 清除下载的模板缓存                                                                                                                                                                                                                                          |
+| `buijs create -m 模块名 `                                                                  | 创建新的模块  m = module                                                                                                                                                                                                                                    |
+| `buijs get id [name]`  新                                                                  | 创建新的模板，ID，为官网模板或组件的id，例如 https://easybui.com/components/237.html ， buijs get 237 会把这个组件下载到 pages/ 目录下，buijs get 237 -s components 指定保存到目录为 pages/components ，buijs get 237 dateselect 重新指定组件名为dateselect |
 
 ### NPM 命令列表
 
-| **命令行**   | **描述**           |
-|:------------- |:-------------------|
-| `npm run build` | 编译成可以打包的文件,默认服务器根路径是"dist",所以需要先编译    |
-| `npm run dev` | 启动服务并打开默认浏览器,支持接口跨域, 并且会自动监听脚本,scss文件,html文件的修改编译    |
+| **命令行**      | **描述**                                                                              |
+| :-------------- | :------------------------------------------------------------------------------------ |
+| `npm run build` | 编译成可以打包的文件,默认服务器根路径是"dist",所以需要先编译                          |
+| `npm run dev`   | 启动服务并打开默认浏览器,支持接口跨域, 并且会自动监听脚本,scss文件,html文件的修改编译 |
 
 
 ## 六、命令示例
@@ -351,25 +358,25 @@ buijs openapi
 
 **单页应用包文件夹说明:**
 
-| **路径**   | **描述**           |
-|:------------- |:-------------------|
-| gulpfile.js     |入口文件    |
-| package.json    |npm依赖配置文件    |
-| app.json    |入口文件    |
-| dist/     | 编译打包最终要部署的目录    |
-| src/index.html     |入口文件    |
-| src/index.js       |入口的脚本    |
-| src/css/bui.css  |BUI库的样式文件    |
-| src/css/style.css  | 当前应用的样式文件    |
-| src/font/         |字体图标目录    |
-| src/images/       |应用图片目录    |
-| src/scss/       | 样式源文件,样式最好放这里可以分模块管理    |
-| src/js/zepto.js  | bui的依赖库  |
-| src/js/bui.js       |  BUI交互控件库   |
-| src/pages/      | 模块目录    |
-| src/pages/main       | 默认 main 模块    |
-| src/pages/main/main.html      | 默认 main 模块模板    |
-| src/pages/main/main.js      | 默认 main 模块定义脚本    |
+| **路径**                 | **描述**                                |
+| :----------------------- | :-------------------------------------- |
+| gulpfile.js              | 入口文件                                |
+| package.json             | npm依赖配置文件                         |
+| app.json                 | 入口文件                                |
+| dist/                    | 编译打包最终要部署的目录                |
+| src/index.html           | 入口文件                                |
+| src/index.js             | 入口的脚本                              |
+| src/css/bui.css          | BUI库的样式文件                         |
+| src/css/style.css        | 当前应用的样式文件                      |
+| src/font/                | 字体图标目录                            |
+| src/images/              | 应用图片目录                            |
+| src/scss/                | 样式源文件,样式最好放这里可以分模块管理 |
+| src/js/zepto.js          | bui的依赖库                             |
+| src/js/bui.js            | BUI交互控件库                           |
+| src/pages/               | 模块目录                                |
+| src/pages/main           | 默认 main 模块                          |
+| src/pages/main/main.html | 默认 main 模块模板                      |
+| src/pages/main/main.js   | 默认 main 模块定义脚本                  |
 
 ## 八、多个bui工程共享`node_modules`模块目录
 
@@ -409,8 +416,9 @@ project1/gulpfile.js, project1/package.json 这两个文件则不需要了
 废弃
 
 
-## 十、创建完整案例参考
+## <del>十、创建完整案例参考</del>
 
+废弃 ，更多功能将通过百搭可视化构建工具实现
 ```bash
 
 # 创建163案例

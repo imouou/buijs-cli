@@ -190,10 +190,14 @@ function fetchEasybuiRelease(version, cb, needRequest) {
         var latestRleaseInfo = null;
         for (let tag in releasesInfo) {
             let info = releasesInfo[tag];
+
             if (!latestRleaseInfo) {
                 latestRleaseInfo = info;
             } else {
-                if (Date.parse(info.time) > Date.parse(latestRleaseInfo.time)) latestRleaseInfo = info;
+
+                let infoversion = info.tag.replace(/\./g, '');
+                let lastversion = latestRleaseInfo.tag.replace(/\./g, '');
+                if (parseInt(infoversion) > parseInt(lastversion)) latestRleaseInfo = info;
             }
         }
 
@@ -270,7 +274,8 @@ function fetchEasybuiRelease(version, cb, needRequest) {
         newInfo.path = newInfo.tag;
         newInfo.id = releaseInfo.id;
         let targetPath = path.join(CACHE_TEMPLATE_PATH, newInfo.path);
-        if (fs.pathExistsSync(targetPath) && latestRleaseInfo.time >= newInfo.time) {
+
+        if (fs.pathExistsSync(targetPath) && latestRleaseInfo && latestRleaseInfo.time >= newInfo.time) {
             // Probably we are fetching latest release...
             log(`获取缓存, 请稍候...`);
             cb(targetPath);
@@ -356,7 +361,7 @@ function getComponent(opt) {
             warn("返回的数据格式错误")
         }
 
-        if (info.code == 0) {
+        if (info && info.code == 0) {
             switch (info.msg) {
                 case "请登录后再操作":
                     warn(`${info.msg}，终端执行 buijs login `);
@@ -455,7 +460,7 @@ function getCliVersion(opt) {
             warn("返回的数据格式错误")
         }
 
-        if (info.code == 0) {
+        if (info && info.code == 0) {
             switch (info.msg) {
                 case "请登录后再操作":
                     warn(`${info.msg}，终端执行 buijs login `);
@@ -466,7 +471,9 @@ function getCliVersion(opt) {
             }
             return;
         }
-
+        if (!info) {
+            return;
+        }
         let archiveInfo = info.data.archivesInfo || {};
         let remoteVersion = String(archiveInfo.version).replace(/\./g, "");
         let currentV = String(currentVersion).replace(/\./g, "");
@@ -536,9 +543,10 @@ function addup(opt) {
 
 // 自动安装提醒
 function autoInstall(name) {
-    let command = name ? `cd ${name} && npm i && npm run dev` : `npm i && npm run dev`;
-    log(`创建工程完成，执行 ${command} 命令预览工程.`);
-    warn("如果安装依赖报错，请先设置淘宝源 npm config set registry https://registry.npmmirror.com ")
+    let commandtip = name ? `cd ${name} && npm install && npm run dev` : `npm install && npm run dev`;
+    let command = name ? `cd ${name} && npm install --registry=https://registry.npmmirror.com && npm run dev` : `npm install --registry=https://registry.npmmirror.com && npm run dev`;
+    log(`创建工程完成，执行 ${commandtip} 命令预览工程.`);
+    // warn("如果安装依赖报错，请先设置淘宝源 npm config set registry https://registry.npmmirror.com ")
 
     var prompt = new confirm('要自动安装依赖并且打开预览吗?');
     prompt.ask(function (answer) {
@@ -548,7 +556,7 @@ function autoInstall(name) {
             log(`需要耗费几分钟时间，请耐心等待.`);
             // Run external tool synchronously
             if (shell.exec(command).code !== 0) {
-                shell.echo('尝试先设置淘宝源 npm config set registry https://registry.npmmirror.com ');
+                shell.echo(`安装失败，请尝试自己执行 ${commandtip} 命令预览工程.`);
                 shell.exit(1);
             }
         }
@@ -660,16 +668,16 @@ function initProject(names, version, templateName, platformName, moduleName, rep
 
             // log("Copying default template file...");
             // 复制文件到项目的cache目录
-            fs.copySync(releasePath, cachePath);
+            // fs.copySync(releasePath, cachePath);
             // 再从cache复制到根目录,防止多次创建覆盖
             // 如果没有加参数,创建默认工程不会覆盖之前的工程
             // 如果项目存在但是有名称,允许复制
             if (isExistProject && names != undefined) {
-                fs.copySync(cachePath, rootName);
+                fs.copySync(releasePath, rootName);
             }
             // 如果项目不存在才会复制
             if (!isExistProject) {
-                fs.copySync(cachePath, rootName);
+                fs.copySync(releasePath, rootName);
 
             }
 
@@ -683,9 +691,9 @@ function initProject(names, version, templateName, platformName, moduleName, rep
             if (templateName || platformName || moduleName) {
 
                 // 缓存模板文件夹路径 /demo/cache/templates/
-                let templateCacheDir = path.join(cachePath, templateDirName);
+                let templateCacheDir = path.join(releasePath, templateDirName);
                 // 模板平台文件夹路径 /demo/cache/platforms/
-                let platformCacheDir = path.join(cachePath, platformDirName);
+                let platformCacheDir = path.join(releasePath, platformDirName);
 
                 // 删除根路径并复制模板
                 if (templateName) {
@@ -694,7 +702,7 @@ function initProject(names, version, templateName, platformName, moduleName, rep
                     let templateNameCache = path.join(templateCacheDir, templateName);
                     if (!fs.existsSync(templateNameCache)) {
                         // 删除缓存
-                        fs.removeSync(cachePath);
+                        // fs.removeSync(cachePath);
                         error("template " + templateName + " is not exist");
                         // return;
                     }
@@ -707,7 +715,7 @@ function initProject(names, version, templateName, platformName, moduleName, rep
 
                     if (!fs.existsSync(templateNameCache)) {
                         // 删除缓存
-                        fs.removeSync(cachePath);
+                        // fs.removeSync(cachePath);
                         error("template " + templateName + " is not exist");
                         // return;
                     }
@@ -722,7 +730,7 @@ function initProject(names, version, templateName, platformName, moduleName, rep
                     let platformNameCache = path.join(platformCacheDir, platformName);
                     if (!fs.existsSync(platformNameCache)) {
 
-                        fs.removeSync(cachePath);
+                        // fs.removeSync(cachePath);
                         error("platform " + platformName + " is not exist");
                         // return;
                     }
@@ -732,7 +740,7 @@ function initProject(names, version, templateName, platformName, moduleName, rep
 
             }
             if (!hasJsFolder && !fs.existsSync(path.join(name, "package.json"))) {
-                let devCacheDir = hightVersion ? path.join(cachePath, devDirName + "/node10") : path.join(cachePath, devDirName + "/node8");
+                let devCacheDir = hightVersion ? path.join(releasePath, devDirName + "/node10") : path.join(releasePath, devDirName + "/node8");
 
                 // 初始化NPM模式
                 initDev(devCacheDir);
@@ -747,7 +755,7 @@ function initProject(names, version, templateName, platformName, moduleName, rep
             // 最后删除平台文件夹
             fs.removeSync(platformDir);
             // 删除缓存
-            fs.removeSync(cachePath);
+            // fs.removeSync(cachePath);
 
             if (typename == "工程" || typename == "平台") {
                 autoInstall(name);
@@ -793,12 +801,20 @@ function initProject(names, version, templateName, platformName, moduleName, rep
                 fs.copySync(platformDirName, rootName);
                 // sass 平台对应不同的sass工程文件
                 if (platformName === "sass") {
-                    let devCacheDir = hightVersion ? path.join(cachePath, devDirName + "/node10-sass") : path.join(cachePath, devDirName + "/node8-sass");
+                    let devCacheDir = "";
+                    let nodeVerNum = parseFloat(nodeVersion);
+                    if (nodeVerNum > 16) {
+                        devCacheDir = path.join(releasePath, devDirName + "/node16-sass");
+                    } else if (nodeVerNum > 10 && nodeVerNum < 16) {
+                        devCacheDir = path.join(releasePath, devDirName + "/node10-sass");
+                    } else if (nodeVerNum < 10) {
+                        devCacheDir = path.join(releasePath, devDirName + "/node8-sass");
+                    }
                     // 初始化NPM模式
-                    initDev(devCacheDir);
+                    fs.existsSync(devCacheDir) && initDev(devCacheDir);
                 }
                 else if (platformName === "typescript") {
-                    let devCacheDir = path.join(cachePath, devDirName + "/typescript");
+                    let devCacheDir = path.join(releasePath, devDirName + "/typescript");
                     // 初始化NPM模式
                     initDev(devCacheDir);
                 }
@@ -921,12 +937,12 @@ function updateProject(names, version, platformName, devName, repoName) {
             let cachePath = path.join(name, "cache");
 
             // 开发包
-            let devCachePath = path.join(cachePath, "dev");
+            let devCachePath = path.join(releasePath, "dev");
             let packageFile = path.join(name, "package.json");
             // 平台
-            let buiCssCachePath = path.join(cachePath, "css");
+            let buiCssCachePath = path.join(releasePath, "css");
             let buiCssFileCachePath = path.join(buiCssCachePath, "bui.css");
-            let buiJsCachePath = path.join(cachePath, "js");
+            let buiJsCachePath = path.join(releasePath, "js");
             let buiJsFileCachePath = path.join(buiJsCachePath, "bui.js");
             // 项目目录
             let buiCssPath = path.join(rootName, "css");
@@ -940,7 +956,7 @@ function updateProject(names, version, platformName, devName, repoName) {
             log("copy cache file...");
             try {
                 // 复制文件到项目的cache目录
-                fs.copySync(releasePath, cachePath);
+                // fs.copySync(releasePath, cachePath);
                 // 再从cache复制bui.css文件到根目录,样式是通用的
                 fs.copySync(buiCssFileCachePath, buiCssFilePath);
             } catch (e) {
@@ -950,7 +966,7 @@ function updateProject(names, version, platformName, devName, repoName) {
             if (platformName) {
 
                 // 模板平台文件夹路径 /demo/cache/platforms/
-                let platformCacheDir = path.join(cachePath, platformDirName);
+                let platformCacheDir = path.join(releasePath, platformDirName);
 
 
                 // 复制平台需要的文件
@@ -970,14 +986,14 @@ function updateProject(names, version, platformName, devName, repoName) {
             // 更新npm 的包
             if (devName) {
                 // 默认: 模板平台文件夹路径 /demo/cache/node/  如果有名称则是创建 /demo/cache/node/node10 之类的文件名
-                let devCacheDir = devName === true ? path.join(cachePath, devDirName + "/node10") : path.join(cachePath, devDirName + "/" + devName);
+                let devCacheDir = devName === true ? path.join(releasePath, devDirName + "/node10") : path.join(releasePath, devDirName + "/" + devName);
                 // 初始化NPM模式
                 initDev(devCacheDir);
 
             }
 
             // 删除缓存
-            fs.removeSync(cachePath);
+            // fs.removeSync(cachePath);
 
 
             // 过滤掉 index.html, index.js 文件
